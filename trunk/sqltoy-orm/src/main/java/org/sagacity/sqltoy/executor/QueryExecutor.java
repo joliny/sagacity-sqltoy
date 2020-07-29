@@ -110,6 +110,11 @@ public class QueryExecutor implements Serializable {
 	 */
 	private HashMap<String, Translate> extendsTranslates = new HashMap<String, Translate>();
 
+	/**
+	 * 动态设置filters
+	 */
+	//private LinkedHashMap<String, ParamFilterModel> filters = new LinkedHashMap<String, ParamFilterModel>();
+
 	public QueryExecutor(String sql) {
 		this.sql = sql;
 	}
@@ -201,8 +206,8 @@ public class QueryExecutor implements Serializable {
 		this.rowCallbackHandler = rowCallbackHandler;
 		return this;
 	}
-	
-	//jdk8 stream之后意义已经不大
+
+	// jdk8 stream之后意义已经不大
 	@Deprecated
 	public QueryExecutor reflectPropertyHandler(ReflectPropertyHandler reflectPropertyHandler) {
 		this.reflectPropertyHandler = reflectPropertyHandler;

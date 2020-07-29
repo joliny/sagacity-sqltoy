@@ -54,6 +54,11 @@ public class EntityQuery implements Serializable {
 
 	private LinkedHashMap<String, String> orderBy = new LinkedHashMap<String, String>();
 
+	/**
+	 * 动态设置filters
+	 */
+	//private LinkedHashMap<String, ParamFilterModel> filters = new LinkedHashMap<String, ParamFilterModel>();
+
 	public EntityQuery where(String where) {
 		this.where = where;
 		return this;
