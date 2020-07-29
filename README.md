@@ -4,12 +4,18 @@
 # WORD版详细文档(完整)
 ## 请见:docs/睿智平台SqlToy4.13使用手册.doc
 
+# 如何快速上手
+## 请参见trunk/sqltoy-quickstart演示项目,阅读其readme.md学习 
+
 # QQ 交流群:531812227 
 # 码云地址: https://gitee.com/sagacity/sagacity-sqltoy
 
 # 最新版本号: 4.13.8 发版日期: 2020-07-26
 * 为sql查询增加id签名,便于数据库通过日志来快速定位sql的来源和归属，比如mysql来定位慢查询
 * 升级sqltoy依赖的spring版本为5.2.8，演示依赖spring-boot版本为2.3.2
+
+# 未来发展规划
+* 准备文本块逐步应用后的一些开发模式的改变,中小规模的sql可能开始适宜在代码中直接书写。
 
 # 使用单位或项目: 
 * 宁波农行  
