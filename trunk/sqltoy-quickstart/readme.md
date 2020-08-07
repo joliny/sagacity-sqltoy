@@ -18,7 +18,7 @@
     <dependency>
 		<groupId>com.sagframe</groupId>
 		<artifactId>sagacity-sqltoy-starter</artifactId>
-		<version>4.13.10</version>
+		<version>4.13.12</version>
 	</dependency>
 ```
 
@@ -214,7 +214,11 @@ java -cp ./libs/\* org.sagacity.quickvo.QuickVOStart ./quickvo.xml
 * StaffInfoServiceTest 演示常规的CRUD
 * TreeTableTest 演示树形表结构的构建和查询
 * ShardingSearchTest 演示分表记录保存和查询(Sharding策略请参见src/main/java com.sqltoy.config.ShardingStrategyConfig )
-* AdvanceQueryTest 查询相关的演示 
+* AdvanceQueryTest 查询相关的演示
+* UniqueCaseTest 演示唯一性验证
+* CascadeCaseTest 演示级联操作 
+* LockCaseTest 演示锁记录修改操作
+* JavaCodeSqlTest 演示在代码中写sql实现原本xml中的功能
 
 
 

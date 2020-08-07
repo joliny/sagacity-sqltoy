@@ -3,5 +3,6 @@
 /.settings/
 /.classpath
 .classpath
-.idea
-*.iml
+/.idea/
+*.im
+sagacity-sqltoy.iml
