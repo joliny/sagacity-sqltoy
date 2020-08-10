@@ -1,4 +1,5 @@
 # 根据大家的反馈，重新打造一个更加清晰的快速上手演示项目
+# 如果sqltoy能够给你来比mybatis、jooq等更有价值的帮助，请为sqltoy点星!
 
 # 小提示
 * quickstart只演示了部分功能,核心是让大家快速上手，详细功能参见文档
@@ -105,8 +106,11 @@ spring:
 ```
 # sqltoy config
 spring.sqltoy.sqlResourcesDir=classpath:com/sqltoy/quickstart
+# 默认配置就是classpath:sqltoy-translate.xml,一致情况下无需配置
 spring.sqltoy.translateConfig=classpath:sqltoy-translate.xml
+# 是否开启debug模式,在开发阶段建议为true,会打印sql
 spring.sqltoy.debug=true
+#项目中用到的数据库保留字定义,这里是举例，正常情况下不用定义
 #spring.sqltoy.reservedWords=status,sex_type
 #obtainDataSource: org.sagacity.sqltoy.plugins.datasource.impl.DefaultObtainDataSourc
 #spring.sqltoy.defaultDataSource=dataSource
@@ -219,6 +223,7 @@ java -cp ./libs/\* org.sagacity.quickvo.QuickVOStart ./quickvo.xml
 * CascadeCaseTest 演示级联操作 
 * LockCaseTest 演示锁记录修改操作
 * JavaCodeSqlTest 演示在代码中写sql实现原本xml中的功能
+* DTOConvertPOJOTest 演示在严格分层场景下DTO和POJO互转的范例
 
 
 
