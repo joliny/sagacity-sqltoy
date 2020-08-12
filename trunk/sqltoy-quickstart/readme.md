@@ -1,5 +1,6 @@
 # 根据大家的反馈，重新打造一个更加清晰的快速上手演示项目
-# 如果sqltoy能够给你来比mybatis、jooq等更有价值的帮助，请为sqltoy点星!
+# 如给您带来比mybatis、jooq等更有价值的帮助，请为sqltoy点星!
+# 我坚信当您已经跨越了crud阶段，面对更多查询分析诉求的时候会非常认可sqltoy!
 
 # 小提示
 * quickstart只演示了部分功能,核心是让大家快速上手，详细功能参见文档
@@ -224,6 +225,12 @@ java -cp ./libs/\* org.sagacity.quickvo.QuickVOStart ./quickvo.xml
 * LockCaseTest 演示锁记录修改操作
 * JavaCodeSqlTest 演示在代码中写sql实现原本xml中的功能
 * DTOConvertPOJOTest 演示在严格分层场景下DTO和POJO互转的范例
+
+# 疑问解答
+
+## 为什么要将*.sql.xml 放在java路径下?
+* sqltoy推荐大家项目按照业务划分先分模块(消息中心、系统管理、订单管理等)后分层(web层、service)，sql文件放于模块中便于模块整体迁移和产品化，同时有利于开发过程，让开发者不需要不断的切换目录
+* 当然这个是sqltoy推荐做法，开发者则可以根据自身实际情况而定,并非强制!
 
 
 

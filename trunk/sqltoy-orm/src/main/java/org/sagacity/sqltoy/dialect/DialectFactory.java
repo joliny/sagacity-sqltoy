@@ -226,7 +226,8 @@ public class DialectFactory {
 			return 0L;
 		}
 		try {
-			SqlExecuteStat.start(sqlToyConfig.getId(), "batchUpdate", sqlToyConfig.isShowSql());
+			SqlExecuteStat.start(sqlToyConfig.getId(), "batchUpdate:[" + dataSet.size() + "]条记录!",
+					sqlToyConfig.isShowSql());
 			Long updateTotalCnt = (Long) DataSourceUtils.processDataSource(sqlToyContext, dataSource,
 					new DataSourceCallbackHandler() {
 						public void doConnection(Connection conn, Integer dbType, String dialect) throws Exception {
@@ -250,9 +251,7 @@ public class DialectFactory {
 									fieldTypes, autoCommit, conn, dbType));
 						}
 					});
-			if (sqlToyContext.isDebug()) {
-				logger.debug("batchUpdate update record count={}", updateTotalCnt);
-			}
+			SqlExecuteStat.debug("batchUpdate update record count={}", updateTotalCnt);
 			return updateTotalCnt;
 		} catch (Exception e) {
 			SqlExecuteStat.error(e);
@@ -276,7 +275,7 @@ public class DialectFactory {
 			final String[] paramsNamed, final Object[] paramsValue, final Boolean autoCommit,
 			final DataSource dataSource) {
 		try {
-			SqlExecuteStat.start(sqlToyConfig.getId(), "update", sqlToyConfig.isShowSql());
+			SqlExecuteStat.start(sqlToyConfig.getId(), "executeSql", sqlToyConfig.isShowSql());
 			Long updateTotalCnt = (Long) DataSourceUtils.processDataSource(sqlToyContext,
 					ShardingUtils.getShardingDataSource(sqlToyContext, sqlToyConfig,
 							new QueryExecutor(sqlToyConfig.getSql(), paramsNamed, paramsValue), dataSource),
@@ -293,9 +292,7 @@ public class DialectFactory {
 									dbType, autoCommit));
 						}
 					});
-			if (sqlToyContext.isDebug()) {
-				logger.debug("executeSql update record count={}", updateTotalCnt);
-			}
+			SqlExecuteStat.debug("executeSql update record count={}", updateTotalCnt);
 			return updateTotalCnt;
 		} catch (Exception e) {
 			SqlExecuteStat.error(e);
@@ -329,9 +326,7 @@ public class DialectFactory {
 									shardingModel.getTableName()));
 						}
 					});
-			if (sqlToyContext.isDebug()) {
-				logger.debug("isUnique result={}", isUnique);
-			}
+			SqlExecuteStat.debug("isUnique result={}", isUnique);
 			return isUnique;
 		} catch (Exception e) {
 			SqlExecuteStat.error(e);
@@ -382,9 +377,7 @@ public class DialectFactory {
 									totalCount = getCountBySql(sqlToyContext, realSqlToyConfig, queryExecutor, conn,
 											dbType, dialect);
 								}
-								if (sqlToyContext.isDebug()) {
-									logger.debug("getRandomResult按比例提取数据,总记录数=" + totalCount);
-								}
+								SqlExecuteStat.debug("getRandomResult按比例提取数据,总记录数=" + totalCount);
 								randomCnt = Double.valueOf(totalCount * randomCount.doubleValue()).longValue();
 								// 如果总记录数不为零，randomCnt最小为1
 								if (totalCount >= 1 && randomCnt < 1) {
@@ -410,9 +403,7 @@ public class DialectFactory {
 										ResultUtils.humpFieldNames(queryExecutor, queryResult.getLabelNames()),
 										(Class) extend.resultType));
 							}
-							if (sqlToyContext.isDebug()) {
-								logger.debug("getRandomResult result count={}", queryResult.getRecordCount());
-							}
+							SqlExecuteStat.debug("getRandomResult result count={}", queryResult.getRecordCount());
 							this.setResult(queryResult);
 						}
 					});
@@ -573,9 +564,8 @@ public class DialectFactory {
 										(Class) extend.resultType));
 							}
 							queryResult.setSkipQueryCount(true);
-							if (sqlToyContext.isDebug()) {
-								logger.debug("findSkipTotalCountPage result count={}", queryResult.getRecordCount());
-							}
+							SqlExecuteStat.debug("findSkipTotalCountPage result count={}",
+									queryResult.getRecordCount());
 							this.setResult(queryResult);
 						}
 					});
@@ -651,7 +641,7 @@ public class DialectFactory {
 								if (illegal) {
 									logger.warn("非法进行分页查询,提取记录总数为:{},sql={}", recordCnt, sqlToyConfig.getIdOrSql());
 								} else {
-									logger.debug("提取记录总数为0,sql={}", sqlToyConfig.getIdOrSql());
+									SqlExecuteStat.debug("提取记录总数为0,sql={}", sqlToyConfig.getIdOrSql());
 								}
 							} else {
 								// 合法的全记录提取,设置页号为1按记录数
@@ -690,9 +680,8 @@ public class DialectFactory {
 											(Class) extend.resultType));
 								}
 							}
-							if (sqlToyContext.isDebug()) {
-								logger.debug("findPage result count={}", ((QueryResult) queryResult).getRecordCount());
-							}
+							SqlExecuteStat.debug("findPage result count={}",
+									((QueryResult) queryResult).getRecordCount());
 							this.setResult(queryResult);
 						}
 					});
@@ -733,18 +722,14 @@ public class DialectFactory {
 							if (topSize < 1) {
 								Long totalCount = getCountBySql(sqlToyContext, realSqlToyConfig, queryExecutor, conn,
 										dbType, dialect);
-								if (sqlToyContext.isDebug()) {
-									logger.debug("findTopByQuery按比例提取数据,总记录数=" + totalCount);
-								}
+								SqlExecuteStat.debug("findTopByQuery按比例提取数据,总记录数=" + totalCount);
 								realTopSize = Double.valueOf(topSize * totalCount.longValue()).intValue();
 							} else {
 								realTopSize = Double.valueOf(topSize).intValue();
 							}
 							if (realTopSize == 0) {
 								this.setResult(new QueryResult());
-								if (sqlToyContext.isDebug()) {
-									logger.debug("findTop result count=0");
-								}
+								SqlExecuteStat.debug("findTop result count=0");
 								return;
 							}
 
@@ -760,9 +745,7 @@ public class DialectFactory {
 										ResultUtils.humpFieldNames(queryExecutor, queryResult.getLabelNames()),
 										(Class) extend.resultType));
 							}
-							if (sqlToyContext.isDebug()) {
-								logger.debug("findTop result count={}", queryResult.getRecordCount());
-							}
+							SqlExecuteStat.debug("findTop result count={}", queryResult.getRecordCount());
 							this.setResult(queryResult);
 						}
 					});
@@ -791,7 +774,7 @@ public class DialectFactory {
 		}
 		try {
 			extend.optimizeArgs(sqlToyConfig);
-			SqlExecuteStat.start(sqlToyConfig.getId(), "query", sqlToyConfig.isShowSql());
+			SqlExecuteStat.start(sqlToyConfig.getId(), "findByQuery", sqlToyConfig.isShowSql());
 			return (QueryResult) DataSourceUtils.processDataSource(sqlToyContext,
 					ShardingUtils.getShardingDataSource(sqlToyContext, sqlToyConfig, queryExecutor, dataSource),
 					new DataSourceCallbackHandler() {
@@ -817,9 +800,7 @@ public class DialectFactory {
 										ResultUtils.humpFieldNames(queryExecutor, queryResult.getLabelNames()),
 										(Class) extend.resultType));
 							}
-							if (sqlToyContext.isDebug()) {
-								logger.debug("findByQuery result count={}", queryResult.getRecordCount());
-							}
+							SqlExecuteStat.debug("findByQuery result count={}", queryResult.getRecordCount());
 							this.setResult(queryResult);
 						}
 					});
@@ -847,7 +828,7 @@ public class DialectFactory {
 		}
 		extend.optimizeArgs(sqlToyConfig);
 		try {
-			SqlExecuteStat.start(sqlToyConfig.getId(), "count", sqlToyConfig.isShowSql());
+			SqlExecuteStat.start(sqlToyConfig.getId(), "getCountBySql", sqlToyConfig.isShowSql());
 			Long count = (Long) DataSourceUtils.processDataSource(sqlToyContext,
 					ShardingUtils.getShardingDataSource(sqlToyContext, sqlToyConfig, queryExecutor, dataSource),
 					new DataSourceCallbackHandler() {
@@ -859,9 +840,7 @@ public class DialectFactory {
 									dialect));
 						}
 					});
-			if (sqlToyContext.isDebug()) {
-				logger.debug("getCountBySql result={}", count);
-			}
+			SqlExecuteStat.debug("getCountBySql result={}", count);
 			return count;
 		} catch (Exception e) {
 			SqlExecuteStat.error(e);
@@ -964,9 +943,7 @@ public class DialectFactory {
 									forceUpdateProps, conn, dbType, dialect, null, shardingModel.getTableName()));
 						}
 					});
-			if (sqlToyContext.isDebug()) {
-				logger.debug("saveAllIgnoreExist operate updateTotalCnt={}", updateTotalCnt);
-			}
+			SqlExecuteStat.debug("saveAllIgnoreExist operate updateTotalCnt={}", updateTotalCnt);
 			return updateTotalCnt;
 		} catch (Exception e) {
 			SqlExecuteStat.error(e);
@@ -994,7 +971,8 @@ public class DialectFactory {
 			return 0L;
 		}
 		try {
-			SqlExecuteStat.start(entities.get(0).getClass().getName(), "saveOrUpdateAll", null);
+			SqlExecuteStat.start(entities.get(0).getClass().getName(), "saveOrUpdateAll:[" + entities.size() + "]条记录!",
+					null);
 			List<Long> result = ParallelUtils.execute(sqlToyContext, entities, true, dataSource,
 					new ParallelCallbackHandler() {
 						public List execute(SqlToyContext sqlToyContext, ShardingGroupModel batchModel)
@@ -1021,9 +999,7 @@ public class DialectFactory {
 					updateTotalCnt = updateTotalCnt + cnt.longValue();
 				}
 			}
-			if (sqlToyContext.isDebug()) {
-				logger.debug("saveOrUpdateAll operate updateTotalCnt={}", updateTotalCnt);
-			}
+			SqlExecuteStat.debug("saveOrUpdateAll operate updateTotalCnt={}", updateTotalCnt);
 			return Long.valueOf(updateTotalCnt);
 		} catch (Exception e) {
 			SqlExecuteStat.error(e);
@@ -1050,7 +1026,8 @@ public class DialectFactory {
 			return 0L;
 		}
 		try {
-			SqlExecuteStat.start(entities.get(0).getClass().getName(), "saveAllNotExist", null);
+			SqlExecuteStat.start(entities.get(0).getClass().getName(), "saveAllNotExist:[" + entities.size() + "]条记录!",
+					null);
 			List<Long> result = ParallelUtils.execute(sqlToyContext, entities, true, dataSource,
 					new ParallelCallbackHandler() {
 						public List execute(SqlToyContext sqlToyContext, ShardingGroupModel batchModel)
@@ -1077,9 +1054,7 @@ public class DialectFactory {
 					updateTotalCnt = updateTotalCnt + cnt.longValue();
 				}
 			}
-			if (sqlToyContext.isDebug()) {
-				logger.debug("saveAllIgnoreExist operate updateTotalCnt={}", updateTotalCnt);
-			}
+			SqlExecuteStat.debug("saveAllIgnoreExist operate updateTotalCnt={}", updateTotalCnt);
 			return Long.valueOf(updateTotalCnt);
 		} catch (Exception e) {
 			SqlExecuteStat.error(e);
@@ -1140,7 +1115,7 @@ public class DialectFactory {
 			return entities;
 		}
 		try {
-			SqlExecuteStat.start(entities.get(0).getClass().getName(), "loadAll", null);
+			SqlExecuteStat.start(entities.get(0).getClass().getName(), "loadAll:[" + entities.size() + "]条记录!", null);
 			// 一般in的最大数量是1000
 			int batchSize = SqlToyConstants.getLoadAllBatchSize();
 			// 对可能存在的配置参数定义错误进行校正,最大控制在1000内
@@ -1174,9 +1149,7 @@ public class DialectFactory {
 							}
 						}));
 			}
-			if (sqlToyContext.isDebug()) {
-				logger.debug("loadAll record count={}", result.size());
-			}
+			SqlExecuteStat.debug("loadAll record count={}", result.size());
 			return result;
 		} catch (Exception e) {
 			SqlExecuteStat.error(e);
@@ -1200,6 +1173,7 @@ public class DialectFactory {
 			return null;
 		}
 		try {
+			SqlExecuteStat.start(entity.getClass().getName(), "save", null);
 			final ShardingModel shardingModel = ShardingUtils.getSharding(sqlToyContext, entity, true, dataSource);
 			Serializable result = (Serializable) DataSourceUtils.processDataSource(sqlToyContext,
 					shardingModel.getDataSource(), new DataSourceCallbackHandler() {
@@ -1208,9 +1182,7 @@ public class DialectFactory {
 									dialect, shardingModel.getTableName()));
 						}
 					});
-			if (sqlToyContext.isDebug()) {
-				logger.debug("save operate return primary value={}", result);
-			}
+			SqlExecuteStat.debug("save operate return primary value={}", result);
 			return result;
 		} catch (Exception e) {
 			SqlExecuteStat.error(e);
@@ -1237,6 +1209,7 @@ public class DialectFactory {
 			return 0L;
 		}
 		try {
+			SqlExecuteStat.start(entities.get(0).getClass().getName(), "saveAll:[" + entities.size() + "]条记录!", null);
 			// 分库分表并行执行
 			List<Long> result = ParallelUtils.execute(sqlToyContext, entities, true, dataSource,
 					new ParallelCallbackHandler() {
@@ -1263,9 +1236,7 @@ public class DialectFactory {
 					updateTotalCnt = updateTotalCnt + cnt.longValue();
 				}
 			}
-			if (sqlToyContext.isDebug()) {
-				logger.debug("saveAll operate effect record count={}", updateTotalCnt);
-			}
+			SqlExecuteStat.debug("saveAll operate effect record count={}", updateTotalCnt);
 			return Long.valueOf(updateTotalCnt);
 		} catch (Exception e) {
 			SqlExecuteStat.error(e);
@@ -1293,6 +1264,7 @@ public class DialectFactory {
 			return 0L;
 		}
 		try {
+			SqlExecuteStat.start(entity.getClass().getName(), "update", null);
 			final ShardingModel shardingModel = ShardingUtils.getSharding(sqlToyContext, entity, false, dataSource);
 			Long updateTotalCnt = (Long) DataSourceUtils.processDataSource(sqlToyContext, shardingModel.getDataSource(),
 					new DataSourceCallbackHandler() {
@@ -1302,9 +1274,7 @@ public class DialectFactory {
 									shardingModel.getTableName()));
 						}
 					});
-			if (sqlToyContext.isDebug()) {
-				logger.debug("updateAll operate effect record count={}", updateTotalCnt);
-			}
+			SqlExecuteStat.debug("update operate effect record count={}", updateTotalCnt);
 			return updateTotalCnt;
 		} catch (Exception e) {
 			SqlExecuteStat.error(e);
@@ -1332,6 +1302,7 @@ public class DialectFactory {
 			return 0L;
 		}
 		try {
+			SqlExecuteStat.start(entities.get(0).getClass().getName(), "updateAll:[" + entities.size() + "]条记录!", null);
 			// 分库分表并行执行
 			List<Long> result = ParallelUtils.execute(sqlToyContext, entities, false, dataSource,
 					new ParallelCallbackHandler() {
@@ -1359,9 +1330,7 @@ public class DialectFactory {
 					updateTotalCnt = updateTotalCnt + cnt.longValue();
 				}
 			}
-			if (sqlToyContext.isDebug()) {
-				logger.debug("updateAll effect record count={}", updateTotalCnt);
-			}
+			SqlExecuteStat.debug("updateAll effect record count={}", updateTotalCnt);
 			return Long.valueOf(updateTotalCnt);
 		} catch (Exception e) {
 			SqlExecuteStat.error(e);
@@ -1383,6 +1352,7 @@ public class DialectFactory {
 			return 0L;
 		}
 		try {
+			SqlExecuteStat.start(entity.getClass().getName(), "delete", null);
 			// 获取分库分表策略结果
 			final ShardingModel shardingModel = ShardingUtils.getSharding(sqlToyContext, entity, false, dataSource);
 			Long updateTotalCnt = (Long) DataSourceUtils.processDataSource(sqlToyContext, shardingModel.getDataSource(),
@@ -1392,9 +1362,7 @@ public class DialectFactory {
 									dialect, shardingModel.getTableName()));
 						}
 					});
-			if (sqlToyContext.isDebug()) {
-				logger.debug("delete operate effect record count={}", updateTotalCnt);
-			}
+			SqlExecuteStat.debug("delete operate effect record count={}", updateTotalCnt);
 			return updateTotalCnt;
 		} catch (Exception e) {
 			SqlExecuteStat.error(e);
@@ -1419,6 +1387,7 @@ public class DialectFactory {
 			return 0L;
 		}
 		try {
+			SqlExecuteStat.start(entities.get(0).getClass().getName(), "deleteAll:[" + entities.size() + "]条记录!", null);
 			// 分库分表并行执行
 			List<Long> result = ParallelUtils.execute(sqlToyContext, entities, false, dataSource,
 					new ParallelCallbackHandler() {
@@ -1445,9 +1414,7 @@ public class DialectFactory {
 					updateTotalCnt = updateTotalCnt + cnt.longValue();
 				}
 			}
-			if (sqlToyContext.isDebug()) {
-				logger.debug("deleteAll operate effect record count={}", updateTotalCnt);
-			}
+			SqlExecuteStat.debug("deleteAll operate effect record count={}", updateTotalCnt);
 			return Long.valueOf(updateTotalCnt);
 		} catch (Exception e) {
 			SqlExecuteStat.error(e);
@@ -1491,9 +1458,7 @@ public class DialectFactory {
 										ResultUtils.humpFieldNames(queryExecutor, queryResult.getLabelNames()),
 										(Class) extend.resultType));
 							}
-							if (sqlToyContext.isDebug()) {
-								logger.debug("updateFetch result count={}", queryResult.getRecordCount());
-							}
+							SqlExecuteStat.debug("updateFetch result count={}", queryResult.getRecordCount());
 							this.setResult(queryResult);
 						}
 					});
@@ -1533,9 +1498,7 @@ public class DialectFactory {
 										ResultUtils.humpFieldNames(queryExecutor, queryResult.getLabelNames()),
 										(Class) extend.resultType));
 							}
-							if (sqlToyContext.isDebug()) {
-								logger.debug("updateFetchTop result count={}", queryResult.getRecordCount());
-							}
+							SqlExecuteStat.debug("updateFetchTop result count={}", queryResult.getRecordCount());
 							this.setResult(queryResult);
 						}
 					});
@@ -1574,9 +1537,7 @@ public class DialectFactory {
 										ResultUtils.humpFieldNames(queryExecutor, queryResult.getLabelNames()),
 										(Class) extend.resultType));
 							}
-							if (sqlToyContext.isDebug()) {
-								logger.debug("updateFetchRandom result count={}", queryResult.getRecordCount());
-							}
+							SqlExecuteStat.debug("updateFetchRandom result count={}", queryResult.getRecordCount());
 							this.setResult(queryResult);
 						}
 					});
@@ -1602,7 +1563,7 @@ public class DialectFactory {
 			final Object[] inParamsValue, final Integer[] outParamsType, final Class resultType,
 			final DataSource dataSource) {
 		try {
-			SqlExecuteStat.start(sqlToyConfig.getId(), "callStore", sqlToyConfig.isShowSql());
+			SqlExecuteStat.start(sqlToyConfig.getId(), "executeStore", sqlToyConfig.isShowSql());
 			return (StoreResult) DataSourceUtils.processDataSource(sqlToyContext, dataSource,
 					new DataSourceCallbackHandler() {
 						public void doConnection(Connection conn, Integer dbType, String dialect) throws Exception {
@@ -1643,9 +1604,7 @@ public class DialectFactory {
 										ResultUtils.humpFieldNames(queryExecutor, queryResult.getLabelNames()),
 										resultType));
 							}
-							if (sqlToyContext.isDebug()) {
-								logger.debug("executeStore result count={}", queryResult.getRecordCount());
-							}
+							SqlExecuteStat.debug("executeStore result count={}", queryResult.getRecordCount());
 							this.setResult(queryResult);
 						}
 					});
