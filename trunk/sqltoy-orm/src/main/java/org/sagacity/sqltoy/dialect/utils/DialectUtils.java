@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.sagacity.sqltoy.SqlExecuteStat;
@@ -110,6 +109,15 @@ public class DialectUtils {
 	private static final String FROM_REGEX = "\\s+from[\\(\\s+]";
 
 	private static final String WHERE_REGEX = "\\s+where[\\(\\s+]";
+	
+	private static final HashMap<String, String> QuesFilters = new HashMap<String, String>() {
+		private static final long serialVersionUID = 7135705054559913831L;
+
+		{
+			put("'", "'");
+			put("\"", "\"");
+		}
+	};
 
 	/**
 	 * @todo 处理分页sql的参数
