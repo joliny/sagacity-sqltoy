@@ -112,6 +112,7 @@ public class SqlServerDialect implements Dialect {
 		} else {
 			sql.append(sqlToyConfig.getSql(dialect));
 		}
+		boolean isNamed = sqlToyConfig.isNamedParam();
 		// 判断是否存在order by
 		int lastFromIndex = StringUtil.matchLastIndex(sqlToyConfig.getSql(dialect), FROM);
 		// 没有order by 自动补充
@@ -119,9 +120,9 @@ public class SqlServerDialect implements Dialect {
 			sql.append(" order by NEWID() ");
 		}
 		sql.append(" offset ");
-		sql.append(sqlToyConfig.isNamedParam() ? ":" + SqlToyConstants.PAGE_FIRST_PARAM_NAME : "?");
+		sql.append(isNamed ? ":" + SqlToyConstants.PAGE_FIRST_PARAM_NAME : "?");
 		sql.append(" rows fetch next ");
-		sql.append(sqlToyConfig.isNamedParam() ? ":" + SqlToyConstants.PAGE_LAST_PARAM_NAME : "?");
+		sql.append(isNamed ? ":" + SqlToyConstants.PAGE_LAST_PARAM_NAME : "?");
 		sql.append(" rows only");
 		if (sqlToyConfig.isHasFast()) {
 			sql.append(") ").append(sqlToyConfig.getFastTailSql(dialect));
