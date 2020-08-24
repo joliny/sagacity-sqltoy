@@ -99,7 +99,7 @@ public class SqlConfigParseUtils {
 	public final static Pattern ARG_NAME_PATTERN = Pattern.compile(ARG_REGEX);
 	public final static String ARG_NAME_BLANK = "? ";
 
-	// sql 拼接时判断前部分sql是否是where 结尾,update 2017-12-4 增加(?i)
+	// sql 拼接时判断前部分sql是否是where 结尾,update 2017-12-4 增加(?i)忽视大小写
 	public final static Pattern WHERE_END_PATTERN = Pattern.compile("(?i)\\Wwhere\\s*$");
 	// where 1=1 结尾模式
 	public final static Pattern WHERE_ONE_EQUAL_PATTERN = Pattern.compile("(?i)\\Wwhere\\s*1\\s*=\\s*1$");
@@ -594,10 +594,8 @@ public class SqlConfigParseUtils {
 				// 逗号分隔的条件参数
 				else if (paramsValue[parameterMarkCnt - 1] instanceof String) {
 					argValue = (String) paramsValue[parameterMarkCnt - 1];
-					/**
-					 * update 2012-11-15 将'xxx'(单引号) 形式的字符串纳入直接替换模式，解决因为使用combineInStr
-					 * 数组长度为1,构造出来的in 条件存在''(空白)符合直接用?参数导致的问题
-					 */
+					// update 2012-11-15 将'xxx'(单引号) 形式的字符串纳入直接替换模式，解决因为使用combineInStr
+					// 数组长度为1,构造出来的in 条件存在''(空白)符合直接用?参数导致的问题
 					if (argValue.indexOf(",") != -1 || (argValue.startsWith("'") && argValue.endsWith("'"))) {
 						partSql = (String) paramsValue[parameterMarkCnt - 1];
 						paramValueList.remove(parameterMarkCnt - 1 + incrementIndex);
@@ -724,9 +722,8 @@ public class SqlConfigParseUtils {
 		if (StringUtil.matches(originalSql, SqlUtil.UNION_PATTERN)) {
 			sqlToyConfig.setHasUnion(SqlUtil.hasUnion(originalSql, false));
 		}
-		/**
-		 * 只有在查询模式前提下才支持fastPage机制
-		 */
+
+		// 只有在查询模式前提下才支持fastPage机制
 		if (sqlType.equals(SqlType.search)) {
 			// 判断是否有快速分页@fast 宏
 			Matcher matcher = FAST_PATTERN.matcher(originalSql);
@@ -760,12 +757,14 @@ public class SqlConfigParseUtils {
 	}
 
 	/**
-	 * @todo 提取fastWith
+	 * @todo 提取fastWith(@fast 涉及到的cte 查询,这里是很别致的地方，假如sql中存在with as t1 (),t2 (),t3 ()
+	 *       select * from @fast(t1,t2) 做count查询时将执行: with as t1(),t2 () select
+	 *       count(1) from xxx,而不会额外的多执行t3)
 	 * @param sqlToyConfig
 	 * @param dialect
 	 */
 	public static void processFastWith(SqlToyConfig sqlToyConfig, String dialect) {
-		//不存在fast 和with 不做处理
+		// 不存在fast 和with 不做处理
 		if (!sqlToyConfig.isHasFast() || !sqlToyConfig.isHasWith()) {
 			return;
 		}

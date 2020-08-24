@@ -1,10 +1,11 @@
 # 根据大家的反馈，重新打造一个更加清晰的快速上手演示项目
-# 如给您带来比mybatis、jooq等更有价值的帮助，请为sqltoy点星!
+* 如给您带来比mybatis、jooq等更有价值的帮助并成为了sqltoy的用户，请为sqltoy点赞!
+
 # 我坚信当您已经跨越了crud阶段，面对更多查询分析诉求的时候会非常认可sqltoy!
 
 # 小提示
 * quickstart只演示了部分功能,核心是让大家快速上手，详细功能参见文档
-* 理论上来sqltoy可以解决您项目上全部数据库交互，我们的erp、数据平台、电商平台已经验证了这一点
+*    理论上来sqltoy可以解决您项目上全部数据库交互，我们的erp、数据平台、电商平台已经验证了这一点
 
 # 学习步骤
 * 1. 配置pom引入sqltoy的依赖
@@ -20,7 +21,7 @@
     <dependency>
 		<groupId>com.sagframe</groupId>
 		<artifactId>sagacity-sqltoy-starter</artifactId>
-		<version>4.13.12</version>
+		<version>4.13.3.1</version>
 	</dependency>
 ```
 
@@ -205,11 +206,15 @@ jdbc.password=quickstart
 ```
 
 * 点击quickvo.bat 即可生产VO了,linux 或 mac 则执行quickvo.sh 
-```
-# windows
-java -cp ./libs/* org.sagacity.quickvo.QuickVOStart quickvo.xml
+* windows环境下:
 
-# mac
+```
+java -cp ./libs/* org.sagacity.quickvo.QuickVOStart quickvo.xml
+```
+
+* mac电脑:
+
+```
 java -cp ./libs/\* org.sagacity.quickvo.QuickVOStart ./quickvo.xml
 ```
 
