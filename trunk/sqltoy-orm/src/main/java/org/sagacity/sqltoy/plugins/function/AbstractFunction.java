@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
  * @author zhongxuchen
  * @version v1.0,Date:2013-1-2
  */
-public abstract class IFunction {
+public abstract class AbstractFunction {
 
 	/**
 	 * 表示支持全部数据库类型

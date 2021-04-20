@@ -23,10 +23,10 @@ import java.util.regex.Pattern;
 import org.sagacity.sqltoy.SqlExecuteStat;
 import org.sagacity.sqltoy.SqlToyConstants;
 import org.sagacity.sqltoy.SqlToyContext;
-import org.sagacity.sqltoy.callback.CallableStatementResultHandler;
-import org.sagacity.sqltoy.callback.PreparedStatementResultHandler;
-import org.sagacity.sqltoy.callback.ReflectPropertyHandler;
-import org.sagacity.sqltoy.callback.RowCallbackHandler;
+import org.sagacity.sqltoy.callback.AbstractCallableStatementResultHandler;
+import org.sagacity.sqltoy.callback.AbstractPreparedStatementResultHandler;
+import org.sagacity.sqltoy.callback.AbstractReflectPropertyHandler;
+import org.sagacity.sqltoy.callback.AbstractRowCallbackHandler;
 import org.sagacity.sqltoy.callback.UniqueSqlHandler;
 import org.sagacity.sqltoy.callback.UpdateRowHandler;
 import org.sagacity.sqltoy.config.SqlConfigParseUtils;
@@ -39,8 +39,8 @@ import org.sagacity.sqltoy.config.model.SqlToyConfig;
 import org.sagacity.sqltoy.config.model.SqlToyResult;
 import org.sagacity.sqltoy.config.model.SqlWithAnalysis;
 import org.sagacity.sqltoy.config.model.TableCascadeModel;
-import org.sagacity.sqltoy.dialect.handler.GenerateSavePKStrategy;
-import org.sagacity.sqltoy.dialect.handler.GenerateSqlHandler;
+import org.sagacity.sqltoy.dialect.handler.AbstractGenerateSavePKStrategy;
+import org.sagacity.sqltoy.dialect.handler.AbstractGenerateSqlHandler;
 import org.sagacity.sqltoy.dialect.handler.LockSqlHandler;
 import org.sagacity.sqltoy.dialect.model.ReturnPkType;
 import org.sagacity.sqltoy.dialect.model.SavePKStrategy;
@@ -217,7 +217,7 @@ public class DialectUtils {
 	 * @throws Exception
 	 */
 	public static QueryResult findBySql(final SqlToyContext sqlToyContext, final SqlToyConfig sqlToyConfig,
-			final String sql, final Object[] paramsValue, final RowCallbackHandler rowCallbackHandler,
+			final String sql, final Object[] paramsValue, final AbstractRowCallbackHandler rowCallbackHandler,
 			final Connection conn, final Integer dbType, final int startIndex, final int fetchSize, final int maxRows)
 			throws Exception {
 		// 做sql签名
@@ -232,7 +232,7 @@ public class DialectUtils {
 			pst.setMaxRows(maxRows);
 		}
 		ResultSet rs = null;
-		return (QueryResult) SqlUtil.preparedStatementProcess(null, pst, rs, new PreparedStatementResultHandler() {
+		return (QueryResult) SqlUtil.preparedStatementProcess(null, pst, rs, new AbstractPreparedStatementResultHandler() {
 			@Override
             public void execute(Object obj, PreparedStatement pst, ResultSet rs) throws Exception {
 				SqlUtil.setParamsValue(sqlToyContext.getTypeHandler(), conn, dbType, pst, paramsValue, null, 0);
@@ -270,7 +270,7 @@ public class DialectUtils {
 			pst = conn.prepareStatement(lastSql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
 		}
 		ResultSet rs = null;
-		return (QueryResult) SqlUtil.preparedStatementProcess(null, pst, rs, new PreparedStatementResultHandler() {
+		return (QueryResult) SqlUtil.preparedStatementProcess(null, pst, rs, new AbstractPreparedStatementResultHandler() {
 			@Override
             public void execute(Object obj, PreparedStatement pst, ResultSet rs) throws Exception {
 				SqlUtil.setParamsValue(sqlToyContext.getTypeHandler(), conn, dbType, pst, paramsValue, null, 0);
@@ -396,7 +396,7 @@ public class DialectUtils {
 		SqlExecuteStat.showSql("执行count查询", lastCountSql, realParams);
 		PreparedStatement pst = conn.prepareStatement(lastCountSql);
 		ResultSet rs = null;
-		return (Long) SqlUtil.preparedStatementProcess(null, pst, rs, new PreparedStatementResultHandler() {
+		return (Long) SqlUtil.preparedStatementProcess(null, pst, rs, new AbstractPreparedStatementResultHandler() {
 			@Override
             public void execute(Object obj, PreparedStatement pst, ResultSet rs) throws SQLException, IOException {
 				long resultCount = 0;
@@ -547,11 +547,11 @@ public class DialectUtils {
 	 * @throws Exception
 	 */
 	public static Long saveOrUpdateAll(SqlToyContext sqlToyContext, List<?> entities, final int batchSize,
-			EntityMeta entityMeta, String[] forceUpdateFields, GenerateSqlHandler generateSqlHandler,
-			ReflectPropertyHandler reflectPropertyHandler, Connection conn, final Integer dbType, Boolean autoCommit)
+                                       EntityMeta entityMeta, String[] forceUpdateFields, AbstractGenerateSqlHandler generateSqlHandler,
+                                       AbstractReflectPropertyHandler reflectPropertyHandler, Connection conn, final Integer dbType, Boolean autoCommit)
 			throws Exception {
 		// 重新构造修改或保存的属性赋值反调
-		ReflectPropertyHandler handler = getSaveOrUpdateReflectHandler(sqlToyContext, entityMeta.getIdArray(),
+		AbstractReflectPropertyHandler handler = getSaveOrUpdateReflectHandler(sqlToyContext, entityMeta.getIdArray(),
 				reflectPropertyHandler, forceUpdateFields);
 		List<Object[]> paramValues = BeanUtil.reflectBeansToInnerAry(entities, entityMeta.getFieldsArray(), null,
 				handler);
@@ -618,10 +618,10 @@ public class DialectUtils {
 	 * @throws Exception
 	 */
 	public static Long saveAllIgnoreExist(SqlToyContext sqlToyContext, List<?> entities, final int batchSize,
-			EntityMeta entityMeta, GenerateSqlHandler generateSqlHandler, ReflectPropertyHandler reflectPropertyHandler,
-			Connection conn, final Integer dbType, Boolean autoCommit) throws Exception {
+                                          EntityMeta entityMeta, AbstractGenerateSqlHandler generateSqlHandler, AbstractReflectPropertyHandler reflectPropertyHandler,
+                                          Connection conn, final Integer dbType, Boolean autoCommit) throws Exception {
 		// 构造全新的新增记录参数赋值反射(覆盖之前的)
-		ReflectPropertyHandler handler = getAddReflectHandler(sqlToyContext, reflectPropertyHandler);
+		AbstractReflectPropertyHandler handler = getAddReflectHandler(sqlToyContext, reflectPropertyHandler);
 		List<Object[]> paramValues = BeanUtil.reflectBeansToInnerAry(entities, entityMeta.getFieldsArray(), null,
 				handler);
 		int pkIndex = entityMeta.getIdIndex();
@@ -1227,9 +1227,9 @@ public class DialectUtils {
 	 * @throws Exception
 	 */
 	public static Object save(final SqlToyContext sqlToyContext, final EntityMeta entityMeta,
-			final PKStrategy pkStrategy, final boolean isAssignPK, final ReturnPkType returnPkType,
-			final String insertSql, Serializable entity, final GenerateSqlHandler generateSqlHandler,
-			final GenerateSavePKStrategy generateSavePKStrategy, final Connection conn, final Integer dbType)
+                              final PKStrategy pkStrategy, final boolean isAssignPK, final ReturnPkType returnPkType,
+                              final String insertSql, Serializable entity, final AbstractGenerateSqlHandler generateSqlHandler,
+                              final AbstractGenerateSavePKStrategy generateSavePKStrategy, final Connection conn, final Integer dbType)
 			throws Exception {
 		final boolean isIdentity = (pkStrategy != null && pkStrategy.equals(PKStrategy.IDENTITY));
 		final boolean isSequence = (pkStrategy != null && pkStrategy.equals(PKStrategy.SEQUENCE));
@@ -1240,7 +1240,7 @@ public class DialectUtils {
 			reflectColumns = entityMeta.getFieldsArray();
 		}
 		// 构造全新的新增记录参数赋值反射(覆盖之前的)
-		ReflectPropertyHandler handler = getAddReflectHandler(sqlToyContext, null);
+		AbstractReflectPropertyHandler handler = getAddReflectHandler(sqlToyContext, null);
 		Object[] fullParamValues = BeanUtil.reflectBeanToAry(entity, reflectColumns, null, handler);
 		boolean needUpdatePk = false;
 
@@ -1288,7 +1288,7 @@ public class DialectUtils {
 		final Object[] paramValues = fullParamValues;
 		final Integer[] paramsType = entityMeta.getFieldsTypeArray();
 		PreparedStatement pst = null;
-		Object result = SqlUtil.preparedStatementProcess(null, pst, null, new PreparedStatementResultHandler() {
+		Object result = SqlUtil.preparedStatementProcess(null, pst, null, new AbstractPreparedStatementResultHandler() {
 			@Override
             public void execute(Object obj, PreparedStatement pst, ResultSet rs) throws SQLException, IOException {
 				if (isIdentity || isSequence) {
@@ -1366,7 +1366,7 @@ public class DialectUtils {
 					savePkStrategy = generateSavePKStrategy.generate(subTableEntityMeta);
 					saveAll(sqlToyContext, subTableEntityMeta, savePkStrategy.getPkStrategy(),
 							savePkStrategy.isAssginValue(), insertSubTableSql, subTableData,
-							sqlToyContext.getBatchSize(), new ReflectPropertyHandler() {
+							sqlToyContext.getBatchSize(), new AbstractReflectPropertyHandler() {
 								@Override
                                 public void process() {
 									for (int i = 0; i < mappedFields.length; i++) {
@@ -1397,9 +1397,9 @@ public class DialectUtils {
 	 * @throws Exception
 	 */
 	public static Long saveAll(SqlToyContext sqlToyContext, EntityMeta entityMeta, PKStrategy pkStrategy,
-			boolean isAssignPK, String insertSql, List<?> entities, final int batchSize,
-			ReflectPropertyHandler reflectPropertyHandler, Connection conn, final Integer dbType,
-			final Boolean autoCommit) throws Exception {
+                               boolean isAssignPK, String insertSql, List<?> entities, final int batchSize,
+                               AbstractReflectPropertyHandler reflectPropertyHandler, Connection conn, final Integer dbType,
+                               final Boolean autoCommit) throws Exception {
 		boolean isIdentity = pkStrategy != null && pkStrategy.equals(PKStrategy.IDENTITY);
 		boolean isSequence = pkStrategy != null && pkStrategy.equals(PKStrategy.SEQUENCE);
 		String[] reflectColumns;
@@ -1409,7 +1409,7 @@ public class DialectUtils {
 			reflectColumns = entityMeta.getFieldsArray();
 		}
 		// 构造全新的新增记录参数赋值反射(覆盖之前的)
-		ReflectPropertyHandler handler = getAddReflectHandler(sqlToyContext, reflectPropertyHandler);
+		AbstractReflectPropertyHandler handler = getAddReflectHandler(sqlToyContext, reflectPropertyHandler);
 		List paramValues = BeanUtil.reflectBeansToInnerAry(entities, reflectColumns, null, handler);
 		int pkIndex = entityMeta.getIdIndex();
 		// 是否存在业务ID
@@ -1503,7 +1503,7 @@ public class DialectUtils {
 		}
 
 		// 构造全新的修改记录参数赋值反射(覆盖之前的)
-		ReflectPropertyHandler handler = getUpdateReflectHandler(sqlToyContext, null, forceUpdateFields);
+		AbstractReflectPropertyHandler handler = getUpdateReflectHandler(sqlToyContext, null, forceUpdateFields);
 		Object[] fieldsValues = BeanUtil.reflectBeanToAry(entity, entityMeta.getFieldsArray(), null, handler);
 		// 判断主键是否为空
 		int pkIndex = entityMeta.getIdIndex();
@@ -1536,7 +1536,7 @@ public class DialectUtils {
 	 * @throws Exception
 	 */
 	public static Long update(SqlToyContext sqlToyContext, Serializable entity, String nullFunction,
-			String[] forceUpdateFields, final boolean cascade, final GenerateSqlHandler generateSqlHandler,
+			String[] forceUpdateFields, final boolean cascade, final AbstractGenerateSqlHandler generateSqlHandler,
 			final Class[] forceCascadeClasses, final HashMap<Class, String[]> subTableForceUpdateProps, Connection conn,
 			final Integer dbType, String tableName) throws Exception {
 		EntityMeta entityMeta = sqlToyContext.getEntityMeta(entity.getClass());
@@ -1601,7 +1601,7 @@ public class DialectUtils {
 				logger.info("执行update主表:{} 对应级联子表: {} 更新操作!", realTable, subTableEntityMeta.getTableName());
 				SqlExecuteStat.debug("执行子表级联更新操作", null);
 				// 将外键值通过反调赋到相关属性上
-				ReflectPropertyHandler reflectPropsHandler = new ReflectPropertyHandler() {
+				AbstractReflectPropertyHandler reflectPropsHandler = new AbstractReflectPropertyHandler() {
 					@Override
                     public void process() {
 						for (int i = 0; i < mappedFields.length; i++) {
@@ -1650,8 +1650,8 @@ public class DialectUtils {
 	// update 级联操作时，子表会涉及saveOrUpdateAll动作,而mysql和postgresql 对应的
 	// ON DUPLICATE KEY UPDATE 当字段为非空时报错，因此需特殊处理
 	private static void mysqlSaveOrUpdateAll(SqlToyContext sqlToyContext, final EntityMeta entityMeta, List<?> entities,
-			ReflectPropertyHandler reflectPropertyHandler, final String[] forceUpdateFields, Connection conn,
-			final Integer dbType) throws Exception {
+                                             AbstractReflectPropertyHandler reflectPropertyHandler, final String[] forceUpdateFields, Connection conn,
+                                             final Integer dbType) throws Exception {
 		int batchSize = sqlToyContext.getBatchSize();
 		final String tableName = entityMeta.getSchemaTable();
 		Long updateCnt = updateAll(sqlToyContext, entities, batchSize, forceUpdateFields, reflectPropertyHandler,
@@ -1675,8 +1675,8 @@ public class DialectUtils {
 
 	// 针对oceanBase
 	private static void oceanBaseSaveOrUpdateAll(SqlToyContext sqlToyContext, final EntityMeta entityMeta,
-			List<?> entities, ReflectPropertyHandler reflectPropertyHandler, final String[] forceUpdateFields,
-			Connection conn, final Integer dbType) throws Exception {
+                                                 List<?> entities, AbstractReflectPropertyHandler reflectPropertyHandler, final String[] forceUpdateFields,
+                                                 Connection conn, final Integer dbType) throws Exception {
 		int batchSize = sqlToyContext.getBatchSize();
 		final String tableName = entityMeta.getSchemaTable();
 		Long updateCnt = updateAll(sqlToyContext, entities, batchSize, forceUpdateFields, reflectPropertyHandler, "nvl",
@@ -1687,7 +1687,7 @@ public class DialectUtils {
 			return;
 		}
 
-		Long saveCnt = saveAllIgnoreExist(sqlToyContext, entities, batchSize, entityMeta, new GenerateSqlHandler() {
+		Long saveCnt = saveAllIgnoreExist(sqlToyContext, entities, batchSize, entityMeta, new AbstractGenerateSqlHandler() {
 			@Override
             public String generateSql(EntityMeta entityMeta, String[] forceUpdateFields) {
 				PKStrategy pkStrategy = entityMeta.getIdStrategy();
@@ -1705,8 +1705,8 @@ public class DialectUtils {
 
 	// 针对postgresql 数据库
 	private static void postgreSaveOrUpdateAll(SqlToyContext sqlToyContext, final EntityMeta entityMeta,
-			List<?> entities, ReflectPropertyHandler reflectPropertyHandler, final String[] forceUpdateFields,
-			Connection conn, final Integer dbType) throws Exception {
+                                               List<?> entities, AbstractReflectPropertyHandler reflectPropertyHandler, final String[] forceUpdateFields,
+                                               Connection conn, final Integer dbType) throws Exception {
 		int batchSize = sqlToyContext.getBatchSize();
 		final String tableName = entityMeta.getSchemaTable();
 		Long updateCnt = updateAll(sqlToyContext, entities, batchSize, forceUpdateFields, reflectPropertyHandler,
@@ -1716,7 +1716,7 @@ public class DialectUtils {
 			logger.debug("级联子表{}修改记录数为:{}", tableName, updateCnt);
 			return;
 		}
-		Long saveCnt = saveAllIgnoreExist(sqlToyContext, entities, batchSize, entityMeta, new GenerateSqlHandler() {
+		Long saveCnt = saveAllIgnoreExist(sqlToyContext, entities, batchSize, entityMeta, new AbstractGenerateSqlHandler() {
 			@Override
             public String generateSql(EntityMeta entityMeta, String[] forceUpdateFields) {
 				PKStrategy pkStrategy = entityMeta.getIdStrategy();
@@ -1736,8 +1736,8 @@ public class DialectUtils {
 
 	// 针对sqlite 数据库
 	private static void sqliteSaveOrUpdateAll(SqlToyContext sqlToyContext, final EntityMeta entityMeta,
-			List<?> entities, ReflectPropertyHandler reflectPropertyHandler, final String[] forceUpdateFields,
-			Connection conn, final Integer dbType) throws Exception {
+                                              List<?> entities, AbstractReflectPropertyHandler reflectPropertyHandler, final String[] forceUpdateFields,
+                                              Connection conn, final Integer dbType) throws Exception {
 		int batchSize = sqlToyContext.getBatchSize();
 		final String tableName = entityMeta.getSchemaTable();
 		Long updateCnt = updateAll(sqlToyContext, entities, batchSize, forceUpdateFields, reflectPropertyHandler,
@@ -1760,8 +1760,8 @@ public class DialectUtils {
 
 	// 针对达梦数据库
 	private static void dmSaveOrUpdateAll(SqlToyContext sqlToyContext, final EntityMeta entityMeta, List<?> entities,
-			ReflectPropertyHandler reflectPropertyHandler, final String[] forceUpdateFields, Connection conn,
-			final Integer dbType) throws Exception {
+                                          AbstractReflectPropertyHandler reflectPropertyHandler, final String[] forceUpdateFields, Connection conn,
+                                          final Integer dbType) throws Exception {
 		int batchSize = sqlToyContext.getBatchSize();
 		final String tableName = entityMeta.getSchemaTable();
 		Long updateCnt = updateAll(sqlToyContext, entities, batchSize, forceUpdateFields, reflectPropertyHandler, "nvl",
@@ -1771,7 +1771,7 @@ public class DialectUtils {
 			logger.debug("级联子表{}修改记录数为:{}", tableName, updateCnt);
 			return;
 		}
-		Long saveCnt = saveAllIgnoreExist(sqlToyContext, entities, batchSize, entityMeta, new GenerateSqlHandler() {
+		Long saveCnt = saveAllIgnoreExist(sqlToyContext, entities, batchSize, entityMeta, new AbstractGenerateSqlHandler() {
 			@Override
             public String generateSql(EntityMeta entityMeta, String[] forceUpdateFields) {
 				PKStrategy pkStrategy = entityMeta.getIdStrategy();
@@ -1785,8 +1785,8 @@ public class DialectUtils {
 
 	// 针对人大金仓kingbase数据库
 	private static void kingbaseSaveOrUpdateAll(SqlToyContext sqlToyContext, final EntityMeta entityMeta,
-			List<?> entities, ReflectPropertyHandler reflectPropertyHandler, final String[] forceUpdateFields,
-			Connection conn, final Integer dbType) throws Exception {
+                                                List<?> entities, AbstractReflectPropertyHandler reflectPropertyHandler, final String[] forceUpdateFields,
+                                                Connection conn, final Integer dbType) throws Exception {
 		int batchSize = sqlToyContext.getBatchSize();
 		final String tableName = entityMeta.getSchemaTable();
 		Long updateCnt = updateAll(sqlToyContext, entities, batchSize, forceUpdateFields, reflectPropertyHandler, "NVL",
@@ -1822,8 +1822,8 @@ public class DialectUtils {
 	 * @throws Exception
 	 */
 	public static Long updateAll(SqlToyContext sqlToyContext, List<?> entities, final int batchSize,
-			final String[] forceUpdateFields, ReflectPropertyHandler reflectPropertyHandler, String nullFunction,
-			Connection conn, final Integer dbType, final Boolean autoCommit, String tableName, boolean skipNull)
+                                 final String[] forceUpdateFields, AbstractReflectPropertyHandler reflectPropertyHandler, String nullFunction,
+                                 Connection conn, final Integer dbType, final Boolean autoCommit, String tableName, boolean skipNull)
 			throws Exception {
 		if (entities == null || entities.isEmpty()) {
 			return 0L;
@@ -1840,7 +1840,7 @@ public class DialectUtils {
 			return 0L;
 		}
 		// 构造全新的修改记录参数赋值反射(覆盖之前的)
-		ReflectPropertyHandler handler = getUpdateReflectHandler(sqlToyContext, reflectPropertyHandler,
+		AbstractReflectPropertyHandler handler = getUpdateReflectHandler(sqlToyContext, reflectPropertyHandler,
 				forceUpdateFields);
 		List<Object[]> paramsValues = BeanUtil.reflectBeansToInnerAry(entities, entityMeta.getFieldsArray(), null,
 				handler);
@@ -2229,7 +2229,7 @@ public class DialectUtils {
 			final Integer dbType) throws Exception {
 		CallableStatement callStat = null;
 		ResultSet rs = null;
-		return (StoreResult) SqlUtil.callableStatementProcess(null, callStat, rs, new CallableStatementResultHandler() {
+		return (StoreResult) SqlUtil.callableStatementProcess(null, callStat, rs, new AbstractCallableStatementResultHandler() {
 			@Override
             public void execute(Object obj, CallableStatement callStat, ResultSet rs) throws Exception {
 				callStat = conn.prepareCall(storeSql);
@@ -2286,8 +2286,8 @@ public class DialectUtils {
 	 * @param preHandler
 	 * @return
 	 */
-	public static ReflectPropertyHandler getAddReflectHandler(SqlToyContext sqlToyContext,
-			final ReflectPropertyHandler preHandler) {
+	public static AbstractReflectPropertyHandler getAddReflectHandler(SqlToyContext sqlToyContext,
+                                                                      final AbstractReflectPropertyHandler preHandler) {
 		if (sqlToyContext.getUnifyFieldsHandler() == null) {
 			return preHandler;
 		}
@@ -2298,7 +2298,7 @@ public class DialectUtils {
 		// 强制修改字段赋值
 		IgnoreCaseSet tmpSet = sqlToyContext.getUnifyFieldsHandler().forceUpdateFields();
 		final IgnoreCaseSet forceUpdateFields = (tmpSet == null) ? new IgnoreCaseSet() : tmpSet;
-		ReflectPropertyHandler handler = new ReflectPropertyHandler() {
+		AbstractReflectPropertyHandler handler = new AbstractReflectPropertyHandler() {
 			@Override
 			public void process() {
 				if (preHandler != null) {
@@ -2325,8 +2325,8 @@ public class DialectUtils {
 	 * @param forceUpdateProps
 	 * @return
 	 */
-	public static ReflectPropertyHandler getUpdateReflectHandler(SqlToyContext sqlToyContext,
-			final ReflectPropertyHandler preHandler, String[] forceUpdateProps) {
+	public static AbstractReflectPropertyHandler getUpdateReflectHandler(SqlToyContext sqlToyContext,
+                                                                         final AbstractReflectPropertyHandler preHandler, String[] forceUpdateProps) {
 		if (sqlToyContext.getUnifyFieldsHandler() == null) {
 			return preHandler;
 		}
@@ -2344,7 +2344,7 @@ public class DialectUtils {
 		// 强制修改字段赋值
 		IgnoreCaseSet tmpSet = sqlToyContext.getUnifyFieldsHandler().forceUpdateFields();
 		final IgnoreCaseSet forceUpdateFields = (tmpSet == null) ? new IgnoreCaseSet() : tmpSet;
-		ReflectPropertyHandler handler = new ReflectPropertyHandler() {
+		AbstractReflectPropertyHandler handler = new AbstractReflectPropertyHandler() {
 			@Override
 			public void process() {
 				if (preHandler != null) {
@@ -2376,8 +2376,8 @@ public class DialectUtils {
 	 * @param forceUpdateProps
 	 * @return
 	 */
-	public static ReflectPropertyHandler getSaveOrUpdateReflectHandler(SqlToyContext sqlToyContext,
-			final String[] idFields, final ReflectPropertyHandler prepHandler, String[] forceUpdateProps) {
+	public static AbstractReflectPropertyHandler getSaveOrUpdateReflectHandler(SqlToyContext sqlToyContext,
+                                                                               final String[] idFields, final AbstractReflectPropertyHandler prepHandler, String[] forceUpdateProps) {
 		if (sqlToyContext.getUnifyFieldsHandler() == null) {
 			return prepHandler;
 		}
@@ -2399,7 +2399,7 @@ public class DialectUtils {
 		final IgnoreCaseSet forceUpdateFields = (tmpSet == null) ? new IgnoreCaseSet() : tmpSet;
 		final int idLength = (idFields == null) ? 0 : idFields.length;
 		// 构造一个新的包含update和save 的字段处理
-		ReflectPropertyHandler handler = new ReflectPropertyHandler() {
+		AbstractReflectPropertyHandler handler = new AbstractReflectPropertyHandler() {
 			@Override
 			public void process() {
 				if (prepHandler != null) {

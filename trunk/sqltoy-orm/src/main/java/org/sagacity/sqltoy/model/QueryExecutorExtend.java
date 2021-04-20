@@ -13,8 +13,8 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.sagacity.sqltoy.SqlToyContext;
-import org.sagacity.sqltoy.callback.ReflectPropertyHandler;
-import org.sagacity.sqltoy.callback.RowCallbackHandler;
+import org.sagacity.sqltoy.callback.AbstractReflectPropertyHandler;
+import org.sagacity.sqltoy.callback.AbstractRowCallbackHandler;
 import org.sagacity.sqltoy.config.model.FormatModel;
 import org.sagacity.sqltoy.config.model.PageOptimize;
 import org.sagacity.sqltoy.config.model.ParamFilterModel;
@@ -77,13 +77,13 @@ public class QueryExecutorExtend implements Serializable {
 	 * 结果集反调处理(已经极少极少使用,可以废弃)
 	 */
 	@Deprecated
-	public RowCallbackHandler rowCallbackHandler;
+	public AbstractRowCallbackHandler rowCallbackHandler;
 
 	/**
 	 * 查询属性值反射处理
 	 */
 	@Deprecated
-	public ReflectPropertyHandler reflectPropertyHandler;
+	public AbstractReflectPropertyHandler reflectPropertyHandler;
 
 	/**
 	 * 查询结果类型

@@ -5,7 +5,7 @@ package org.sagacity.sqltoy.plugins.function.impl;
 
 import java.util.regex.Pattern;
 
-import org.sagacity.sqltoy.plugins.function.IFunction;
+import org.sagacity.sqltoy.plugins.function.AbstractFunction;
 
 /**
  * @project sqltoy-orm
@@ -13,7 +13,7 @@ import org.sagacity.sqltoy.plugins.function.IFunction;
  * @author zhongxuchen
  * @version v1.0,Date:2013-1-2
  */
-public class ToNumber extends IFunction {
+public class ToNumber extends AbstractFunction {
 	private static Pattern regex = Pattern.compile("(?i)\\Wto\\_number\\(");
 
 	/*

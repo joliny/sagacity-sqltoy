@@ -5,7 +5,7 @@ package org.sagacity.sqltoy.plugins.function.impl;
 
 import java.util.regex.Pattern;
 
-import org.sagacity.sqltoy.plugins.function.IFunction;
+import org.sagacity.sqltoy.plugins.function.AbstractFunction;
 import org.sagacity.sqltoy.utils.DataSourceUtils.DBType;
 
 /**
@@ -14,7 +14,7 @@ import org.sagacity.sqltoy.utils.DataSourceUtils.DBType;
  * @author zhongxuchen
  * @version v1.0,Date:2015年10月19日
  */
-public class Length extends IFunction {
+public class Length extends AbstractFunction {
 	private static Pattern regex = Pattern.compile("(?i)\\W(length|lengthb|len|datalength|char\\_length)\\(");
 
 	/*

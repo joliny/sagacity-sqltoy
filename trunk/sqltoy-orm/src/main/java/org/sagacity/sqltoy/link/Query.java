@@ -9,7 +9,7 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.sagacity.sqltoy.SqlToyContext;
-import org.sagacity.sqltoy.callback.RowCallbackHandler;
+import org.sagacity.sqltoy.callback.AbstractRowCallbackHandler;
 import org.sagacity.sqltoy.config.model.SqlToyConfig;
 import org.sagacity.sqltoy.config.model.SqlType;
 import org.sagacity.sqltoy.executor.QueryExecutor;
@@ -59,7 +59,7 @@ public class Query extends BaseLink {
 	 * 结果自定义处理器,一般不使用(作为特殊情况下的备用策略)
 	 */
 	@Deprecated
-	private RowCallbackHandler handler;
+	private AbstractRowCallbackHandler handler;
 
 	/**
 	 * jdbc 查询时默认加载到内存中的记录数量 -1表示不设置，采用数据库默认的值
@@ -106,7 +106,7 @@ public class Query extends BaseLink {
 		return this;
 	}
 
-	public Query rowhandler(RowCallbackHandler handler) {
+	public Query rowhandler(AbstractRowCallbackHandler handler) {
 		this.handler = handler;
 		return this;
 	}

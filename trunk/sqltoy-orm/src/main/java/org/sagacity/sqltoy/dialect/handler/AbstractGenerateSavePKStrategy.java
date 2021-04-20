@@ -12,7 +12,7 @@ import org.sagacity.sqltoy.dialect.model.SavePKStrategy;
  * @author zhongxuchen
  * @version v1.0,Date:2015年3月19日
  */
-public abstract class GenerateSavePKStrategy {
+public abstract class AbstractGenerateSavePKStrategy {
 	/**
 	 * @todo 提供不同数据库方言insert数据时主键产生策略
 	 * @param entityMeta

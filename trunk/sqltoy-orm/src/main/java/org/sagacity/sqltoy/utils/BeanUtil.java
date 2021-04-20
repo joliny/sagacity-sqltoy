@@ -27,12 +27,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.sagacity.sqltoy.callback.ReflectPropertyHandler;
+import org.sagacity.sqltoy.callback.AbstractReflectPropertyHandler;
 import org.sagacity.sqltoy.config.annotation.SqlToyEntity;
 import org.sagacity.sqltoy.config.model.EntityMeta;
 import org.sagacity.sqltoy.config.model.TableCascadeModel;
 import org.sagacity.sqltoy.model.IgnoreKeyCaseMap;
-import org.sagacity.sqltoy.plugins.TypeHandler;
+import org.sagacity.sqltoy.plugins.AbstractTypeHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -438,7 +438,7 @@ public class BeanUtil {
 	 * @return
 	 * @throws Exception
 	 */
-	public static Object convertType(TypeHandler typeHandler, Object value, String typeOriginName, Class genericType)
+	public static Object convertType(AbstractTypeHandler typeHandler, Object value, String typeOriginName, Class genericType)
 			throws Exception {
 		Object paramValue = value;
 		// 转换为小写
@@ -724,7 +724,7 @@ public class BeanUtil {
 	 * @throws Exception
 	 */
 	public static List reflectBeansToList(List datas, String[] properties,
-			ReflectPropertyHandler reflectPropertyHandler) throws Exception {
+			AbstractReflectPropertyHandler reflectPropertyHandler) throws Exception {
 		if (null == datas || datas.isEmpty() || null == properties || properties.length < 1) {
 			return null;
 		}
@@ -803,7 +803,7 @@ public class BeanUtil {
 	 * @throws Exception
 	 */
 	public static Object[] reflectBeanToAry(Object serializable, String[] properties, Object[] defaultValues,
-			ReflectPropertyHandler reflectPropertyHandler) {
+			AbstractReflectPropertyHandler reflectPropertyHandler) {
 		if (null == serializable || null == properties || properties.length == 0) {
 			return null;
 		}
@@ -895,7 +895,7 @@ public class BeanUtil {
 	 * @throws Exception
 	 */
 	public static List<Object[]> reflectBeansToInnerAry(List dataSet, String[] properties, Object[] defaultValues,
-			ReflectPropertyHandler reflectPropertyHandler) {
+			AbstractReflectPropertyHandler reflectPropertyHandler) {
 		if (null == dataSet || dataSet.isEmpty() || null == properties || properties.length < 1) {
 			return null;
 		}
@@ -968,7 +968,7 @@ public class BeanUtil {
 		return resultList;
 	}
 
-	public static List reflectListToBean(TypeHandler typeHandler, List datas, String[] properties, Class voClass) {
+	public static List reflectListToBean(AbstractTypeHandler typeHandler, List datas, String[] properties, Class voClass) {
 		int[] indexs = null;
 		if (properties != null && properties.length > 0) {
 			indexs = new int[properties.length];
@@ -989,8 +989,8 @@ public class BeanUtil {
 	 * @return
 	 * @throws Exception
 	 */
-	public static List reflectListToBean(TypeHandler typeHandler, List datas, int[] indexs, String[] properties,
-			Class voClass) throws Exception {
+	public static List reflectListToBean(AbstractTypeHandler typeHandler, List datas, int[] indexs, String[] properties,
+                                         Class voClass) throws Exception {
 		return reflectListToBean(typeHandler, datas, indexs, properties, voClass, true);
 	}
 
@@ -1004,8 +1004,8 @@ public class BeanUtil {
 	 * @param autoConvertType
 	 * @return
 	 */
-	public static List reflectListToBean(TypeHandler typeHandler, List datas, int[] indexs, String[] properties,
-			Class voClass, boolean autoConvertType) {
+	public static List reflectListToBean(AbstractTypeHandler typeHandler, List datas, int[] indexs, String[] properties,
+                                         Class voClass, boolean autoConvertType) {
 		if (null == datas || datas.isEmpty()) {
 			return null;
 		}
@@ -1392,8 +1392,8 @@ public class BeanUtil {
 	 * @param ids
 	 * @return
 	 */
-	public static <T extends Serializable> List<T> wrapEntities(TypeHandler typeHandler, EntityMeta entityMeta,
-			Class<T> voClass, Object... ids) {
+	public static <T extends Serializable> List<T> wrapEntities(AbstractTypeHandler typeHandler, EntityMeta entityMeta,
+                                                                Class<T> voClass, Object... ids) {
 		List<T> entities = new ArrayList<T>();
 		Set<Object> repeat = new HashSet<Object>();
 		try {

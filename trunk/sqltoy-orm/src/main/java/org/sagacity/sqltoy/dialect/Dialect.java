@@ -9,8 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.sagacity.sqltoy.SqlToyContext;
-import org.sagacity.sqltoy.callback.ReflectPropertyHandler;
-import org.sagacity.sqltoy.callback.RowCallbackHandler;
+import org.sagacity.sqltoy.callback.AbstractReflectPropertyHandler;
+import org.sagacity.sqltoy.callback.AbstractRowCallbackHandler;
 import org.sagacity.sqltoy.callback.UpdateRowHandler;
 import org.sagacity.sqltoy.config.model.SqlToyConfig;
 import org.sagacity.sqltoy.executor.QueryExecutor;
@@ -108,8 +108,8 @@ public interface Dialect {
 	 * @throws Exception
 	 */
 	public QueryResult findBySql(final SqlToyContext sqlToyContext, final SqlToyConfig sqlToyConfig, final String sql,
-			final Object[] paramsValue, final RowCallbackHandler rowCallbackHandler, final Connection conn,
-			final LockMode lockMode, final Integer dbType, final String dialect, final int fetchSize, final int maxRows)
+                                 final Object[] paramsValue, final AbstractRowCallbackHandler rowCallbackHandler, final Connection conn,
+                                 final LockMode lockMode, final Integer dbType, final String dialect, final int fetchSize, final int maxRows)
 			throws Exception;
 
 	/**
@@ -192,8 +192,8 @@ public interface Dialect {
 	 * @throws Exception
 	 */
 	public Long saveAll(final SqlToyContext sqlToyContext, final List<?> entities, final int batchSize,
-			final ReflectPropertyHandler reflectPropertyHandler, final Connection conn, final Integer dbType,
-			final String dialect, final Boolean autoCommit, final String tableName) throws Exception;
+                        final AbstractReflectPropertyHandler reflectPropertyHandler, final Connection conn, final Integer dbType,
+                        final String dialect, final Boolean autoCommit, final String tableName) throws Exception;
 
 	/**
 	 * @todo 修改单个对象
@@ -231,7 +231,7 @@ public interface Dialect {
 	 * @throws Exception
 	 */
 	public Long updateAll(final SqlToyContext sqlToyContext, final List<?> entities, final int batchSize,
-			final String[] forceUpdateFields, final ReflectPropertyHandler reflectPropertyHandler,
+			final String[] forceUpdateFields, final AbstractReflectPropertyHandler reflectPropertyHandler,
 			final Connection conn, final Integer dbType, final String dialect, final Boolean autoCommit,
 			final String tableName) throws Exception;
 
@@ -268,9 +268,9 @@ public interface Dialect {
 	 * @throws Exception
 	 */
 	public Long saveOrUpdateAll(final SqlToyContext sqlToyContext, final List<?> entities, final int batchSize,
-			final ReflectPropertyHandler reflectPropertyHandler, final String[] forceUpdateFields,
-			final Connection conn, final Integer dbType, final String dialect, final Boolean autoCommit,
-			final String tableName) throws Exception;
+                                final AbstractReflectPropertyHandler reflectPropertyHandler, final String[] forceUpdateFields,
+                                final Connection conn, final Integer dbType, final String dialect, final Boolean autoCommit,
+                                final String tableName) throws Exception;
 
 	/**
 	 * @todo 批量保存,主键冲突的则忽视
@@ -287,8 +287,8 @@ public interface Dialect {
 	 * @throws Exception
 	 */
 	public Long saveAllIgnoreExist(final SqlToyContext sqlToyContext, final List<?> entities, final int batchSize,
-			final ReflectPropertyHandler reflectPropertyHandler, final Connection conn, final Integer dbType,
-			final String dialect, final Boolean autoCommit, final String tableName) throws Exception;
+                                   final AbstractReflectPropertyHandler reflectPropertyHandler, final Connection conn, final Integer dbType,
+                                   final String dialect, final Boolean autoCommit, final String tableName) throws Exception;
 
 	/**
 	 * @todo 删除单个对象

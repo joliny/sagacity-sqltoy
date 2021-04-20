@@ -12,8 +12,8 @@ import java.util.List;
 
 import org.sagacity.sqltoy.SqlExecuteStat;
 import org.sagacity.sqltoy.SqlToyContext;
-import org.sagacity.sqltoy.callback.PreparedStatementResultHandler;
-import org.sagacity.sqltoy.callback.ReflectPropertyHandler;
+import org.sagacity.sqltoy.callback.AbstractPreparedStatementResultHandler;
+import org.sagacity.sqltoy.callback.AbstractReflectPropertyHandler;
 import org.sagacity.sqltoy.config.SqlConfigParseUtils;
 import org.sagacity.sqltoy.config.model.EntityMeta;
 import org.sagacity.sqltoy.config.model.FieldMeta;
@@ -67,7 +67,7 @@ public class ClickHouseDialectUtils {
 			reflectColumns = entityMeta.getFieldsArray();
 		}
 		// 构造全新的新增记录参数赋值反射(覆盖之前的)
-		ReflectPropertyHandler handler = DialectUtils.getAddReflectHandler(sqlToyContext, null);
+		AbstractReflectPropertyHandler handler = DialectUtils.getAddReflectHandler(sqlToyContext, null);
 		Object[] fullParamValues = BeanUtil.reflectBeanToAry(entity, reflectColumns, null, handler);
 		boolean needUpdatePk = false;
 
@@ -115,7 +115,7 @@ public class ClickHouseDialectUtils {
 		final Object[] paramValues = fullParamValues;
 		final Integer[] paramsType = entityMeta.getFieldsTypeArray();
 		PreparedStatement pst = null;
-		Object result = SqlUtil.preparedStatementProcess(null, pst, null, new PreparedStatementResultHandler() {
+		Object result = SqlUtil.preparedStatementProcess(null, pst, null, new AbstractPreparedStatementResultHandler() {
 			@Override
             public void execute(Object obj, PreparedStatement pst, ResultSet rs) throws SQLException, IOException {
 				if (isIdentity || isSequence) {
@@ -184,8 +184,8 @@ public class ClickHouseDialectUtils {
 	 * @throws Exception
 	 */
 	public static Long saveAll(SqlToyContext sqlToyContext, EntityMeta entityMeta, String insertSql, List<?> entities,
-			final int batchSize, ReflectPropertyHandler reflectPropertyHandler, Connection conn, final Integer dbType,
-			final Boolean autoCommit) throws Exception {
+                               final int batchSize, AbstractReflectPropertyHandler reflectPropertyHandler, Connection conn, final Integer dbType,
+                               final Boolean autoCommit) throws Exception {
 		PKStrategy pkStrategy = entityMeta.getIdStrategy();
 		boolean isIdentity = pkStrategy != null && pkStrategy.equals(PKStrategy.IDENTITY);
 		boolean isSequence = pkStrategy != null && pkStrategy.equals(PKStrategy.SEQUENCE);
@@ -197,7 +197,7 @@ public class ClickHouseDialectUtils {
 			reflectColumns = entityMeta.getFieldsArray();
 		}
 		// 构造全新的新增记录参数赋值反射(覆盖之前的)
-		ReflectPropertyHandler handler = DialectUtils.getAddReflectHandler(sqlToyContext, reflectPropertyHandler);
+		AbstractReflectPropertyHandler handler = DialectUtils.getAddReflectHandler(sqlToyContext, reflectPropertyHandler);
 		List paramValues = BeanUtil.reflectBeansToInnerAry(entities, reflectColumns, null, handler);
 		int pkIndex = entityMeta.getIdIndex();
 		// 是否存在业务ID
@@ -402,7 +402,7 @@ public class ClickHouseDialectUtils {
 			return 0L;
 		}
 		// 构造全新的修改记录参数赋值反射(覆盖之前的)
-		ReflectPropertyHandler handler = DialectUtils.getUpdateReflectHandler(sqlToyContext, null, forceUpdateFields);
+		AbstractReflectPropertyHandler handler = DialectUtils.getUpdateReflectHandler(sqlToyContext, null, forceUpdateFields);
 		// 排除分区字段
 		String[] fields = entityMeta.getFieldsNotPartitionKey();
 		Object[] fieldsValues = BeanUtil.reflectBeanToAry(entity, fields, null, handler);

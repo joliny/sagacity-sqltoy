@@ -12,7 +12,7 @@ import java.sql.ResultSet;
  * @author zhongxuchen
  * @version v1.0,Date:2009-3-20
  */
-public abstract class CallableStatementResultHandler {
+public abstract class AbstractCallableStatementResultHandler {
 	/**
 	 * 结果集
 	 */

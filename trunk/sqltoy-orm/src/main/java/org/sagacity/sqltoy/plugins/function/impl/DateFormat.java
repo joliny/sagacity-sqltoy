@@ -5,7 +5,7 @@ package org.sagacity.sqltoy.plugins.function.impl;
 
 import java.util.regex.Pattern;
 
-import org.sagacity.sqltoy.plugins.function.IFunction;
+import org.sagacity.sqltoy.plugins.function.AbstractFunction;
 import org.sagacity.sqltoy.utils.DataSourceUtils.DBType;
 
 /**
@@ -15,7 +15,7 @@ import org.sagacity.sqltoy.utils.DataSourceUtils.DBType;
  * @version v1.0, Date:2019年9月9日
  * @modify 2019年9月9日,修改说明
  */
-public class DateFormat extends IFunction {
+public class DateFormat extends AbstractFunction {
 	private static Pattern regex = Pattern.compile("(?i)\\Wdate\\_format\\(");
 
 	/*

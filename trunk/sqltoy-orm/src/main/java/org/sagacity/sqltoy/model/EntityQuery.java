@@ -7,7 +7,7 @@ import java.util.Set;
 
 import javax.sql.DataSource;
 
-import org.sagacity.sqltoy.callback.SelectFields;
+import org.sagacity.sqltoy.callback.AbstractSelectFields;
 import org.sagacity.sqltoy.config.model.PageOptimize;
 import org.sagacity.sqltoy.config.model.SecureMask;
 import org.sagacity.sqltoy.config.model.ShardingStrategyConfig;
@@ -60,7 +60,7 @@ public class EntityQuery implements Serializable {
 	 * @param selectFields
 	 * @return
 	 */
-	public EntityQuery select(SelectFields selectFields) {
+	public EntityQuery select(AbstractSelectFields selectFields) {
 		if (selectFields != null) {
 			innerModel.fields = selectFields.getSelectFields();
 			innerModel.notSelectFields = null;

@@ -15,7 +15,7 @@ import java.util.List;
  * @version v1.0,Date:2008-12-9
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public abstract class RowCallbackHandler {
+public abstract class AbstractRowCallbackHandler {
 	/**
 	 * 结果集
 	 */

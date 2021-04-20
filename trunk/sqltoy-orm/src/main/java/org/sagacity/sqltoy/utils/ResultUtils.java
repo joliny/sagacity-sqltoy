@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentMap;
 import org.sagacity.sqltoy.SqlExecuteStat;
 import org.sagacity.sqltoy.SqlToyConstants;
 import org.sagacity.sqltoy.SqlToyContext;
-import org.sagacity.sqltoy.callback.RowCallbackHandler;
+import org.sagacity.sqltoy.callback.AbstractRowCallbackHandler;
 import org.sagacity.sqltoy.callback.UpdateRowHandler;
 import org.sagacity.sqltoy.config.SqlConfigParseUtils;
 import org.sagacity.sqltoy.config.model.ColsChainRelativeModel;
@@ -79,8 +79,8 @@ public class ResultUtils {
 	 * @throws Exception
 	 */
 	public static QueryResult processResultSet(final SqlToyContext sqlToyContext, final SqlToyConfig sqlToyConfig,
-			Connection conn, ResultSet rs, RowCallbackHandler rowCallbackHandler, UpdateRowHandler updateRowHandler,
-			int startColIndex) throws Exception {
+                                               Connection conn, ResultSet rs, AbstractRowCallbackHandler rowCallbackHandler, UpdateRowHandler updateRowHandler,
+                                               int startColIndex) throws Exception {
 		QueryResult result = new QueryResult();
 		// 记录行记数器
 		int index = 0;

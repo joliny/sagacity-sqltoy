@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.sagacity.sqltoy.callback.ReflectPropertyHandler;
+import org.sagacity.sqltoy.callback.AbstractReflectPropertyHandler;
 import org.sagacity.sqltoy.model.CacheMatchFilter;
 import org.sagacity.sqltoy.model.PaginationModel;
 import org.sagacity.sqltoy.model.ParallQuery;
 import org.sagacity.sqltoy.model.ParallelConfig;
 import org.sagacity.sqltoy.model.QueryResult;
-import org.sagacity.sqltoy.translate.TranslateHandler;
+import org.sagacity.sqltoy.translate.AbstractTranslateHandler;
 
 /**
  * @project sqltoy-orm
@@ -36,7 +36,7 @@ public interface SqlToyCRUDService {
 	 * @param entities
 	 * @param reflectPropertyHandler
 	 */
-	public <T extends Serializable> Long saveAll(List<T> entities, ReflectPropertyHandler reflectPropertyHandler);
+	public <T extends Serializable> Long saveAll(List<T> entities, AbstractReflectPropertyHandler reflectPropertyHandler);
 
 	/**
 	 * @todo 批量保存对象
@@ -84,7 +84,7 @@ public interface SqlToyCRUDService {
 	 * @param reflectPropertyHandler
 	 * @param forceUpdateProps
 	 */
-	public <T extends Serializable> Long updateAll(List<T> entities, ReflectPropertyHandler reflectPropertyHandler,
+	public <T extends Serializable> Long updateAll(List<T> entities, AbstractReflectPropertyHandler reflectPropertyHandler,
 			String... forceUpdateProps);
 
 	/**
@@ -116,7 +116,7 @@ public interface SqlToyCRUDService {
 	 * @param forceUpdateProps
 	 */
 	public <T extends Serializable> Long saveOrUpdateAll(List<T> entities,
-			ReflectPropertyHandler reflectPropertyHandler, String... forceUpdateProps);
+                                                         AbstractReflectPropertyHandler reflectPropertyHandler, String... forceUpdateProps);
 
 	/**
 	 * @todo 获取对象数据
@@ -208,7 +208,7 @@ public interface SqlToyCRUDService {
 	 */
 	public <T extends Serializable> List<T> findFrom(T entity);
 
-	public <T extends Serializable> List<T> findFrom(T entity, ReflectPropertyHandler reflectPropertyHandler);
+	public <T extends Serializable> List<T> findFrom(T entity, AbstractReflectPropertyHandler reflectPropertyHandler);
 
 	/**
 	 * @todo 通过实体对象中的@page/或@list 定义的sql查询分页结果集
@@ -219,7 +219,7 @@ public interface SqlToyCRUDService {
 	public <T extends Serializable> PaginationModel<T> findPageFrom(PaginationModel paginationModel, T entity);
 
 	public <T extends Serializable> PaginationModel<T> findPageFrom(PaginationModel paginationModel, T entity,
-			ReflectPropertyHandler reflectPropertyHandler);
+			AbstractReflectPropertyHandler reflectPropertyHandler);
 
 	/**
 	 * @todo 通过实体对象中@page/@list 定义的sql 查询top记录
@@ -258,7 +258,7 @@ public interface SqlToyCRUDService {
 	 * @param cacheName
 	 * @param handler   反调方法:取key 和回写名称
 	 */
-	public void translate(Collection dataSet, String cacheName, TranslateHandler handler);
+	public void translate(Collection dataSet, String cacheName, AbstractTranslateHandler handler);
 
 	/**
 	 * @todo 对记录进行翻译(可以)
@@ -270,7 +270,7 @@ public interface SqlToyCRUDService {
 	 * @param handler
 	 */
 	public void translate(Collection dataSet, String cacheName, String cacheType, Integer cacheNameIndex,
-			TranslateHandler handler);
+			AbstractTranslateHandler handler);
 
 	/**
 	 * @todo 判断缓存是否存在

@@ -10,7 +10,7 @@ import java.sql.SQLException;
  * @version v1.0, Date:2020-11-25
  * @modify 2020-11-25,修改说明
  */
-public abstract class TypeHandler {
+public abstract class AbstractTypeHandler {
 	/**
 	 * @TODO 当数据为null时,pst.setNull(index,java.sql.Types.xxxx)
 	 *       <li>返回true表示完成了setNull操作，框架不再继续处理</li>

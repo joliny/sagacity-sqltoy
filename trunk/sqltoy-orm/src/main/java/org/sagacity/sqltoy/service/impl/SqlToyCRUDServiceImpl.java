@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.sagacity.sqltoy.callback.ReflectPropertyHandler;
+import org.sagacity.sqltoy.callback.AbstractReflectPropertyHandler;
 import org.sagacity.sqltoy.config.model.EntityMeta;
 import org.sagacity.sqltoy.dao.SqlToyLazyDao;
 import org.sagacity.sqltoy.exception.DataAccessException;
@@ -18,7 +18,7 @@ import org.sagacity.sqltoy.model.ParallelConfig;
 import org.sagacity.sqltoy.model.QueryResult;
 import org.sagacity.sqltoy.model.TreeTableModel;
 import org.sagacity.sqltoy.service.SqlToyCRUDService;
-import org.sagacity.sqltoy.translate.TranslateHandler;
+import org.sagacity.sqltoy.translate.AbstractTranslateHandler;
 import org.sagacity.sqltoy.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,7 +76,7 @@ public class SqlToyCRUDServiceImpl implements SqlToyCRUDService {
 	 */
 	@Override
 	@Transactional
-	public <T extends Serializable> Long saveAll(List<T> entities, ReflectPropertyHandler reflectPropertyHandler) {
+	public <T extends Serializable> Long saveAll(List<T> entities, AbstractReflectPropertyHandler reflectPropertyHandler) {
 		return sqlToyLazyDao.saveAll(entities, reflectPropertyHandler);
 	}
 
@@ -147,7 +147,7 @@ public class SqlToyCRUDServiceImpl implements SqlToyCRUDService {
 	 */
 	@Override
 	@Transactional
-	public <T extends Serializable> Long updateAll(List<T> entities, ReflectPropertyHandler reflectPropertyHandler,
+	public <T extends Serializable> Long updateAll(List<T> entities, AbstractReflectPropertyHandler reflectPropertyHandler,
 			String... forceUpdateProps) {
 		return sqlToyLazyDao.updateAll(entities, reflectPropertyHandler, forceUpdateProps);
 	}
@@ -213,7 +213,7 @@ public class SqlToyCRUDServiceImpl implements SqlToyCRUDService {
 	@Override
 	@Transactional
 	public <T extends Serializable> Long saveOrUpdateAll(List<T> entities,
-			ReflectPropertyHandler reflectPropertyHandler, String... forceUpdateProps) {
+                                                         AbstractReflectPropertyHandler reflectPropertyHandler, String... forceUpdateProps) {
 		return sqlToyLazyDao.saveOrUpdateAll(entities, reflectPropertyHandler, forceUpdateProps);
 	}
 
@@ -361,7 +361,7 @@ public class SqlToyCRUDServiceImpl implements SqlToyCRUDService {
 	 */
 	@Override
 	@Transactional(propagation = Propagation.SUPPORTS)
-	public <T extends Serializable> List<T> findFrom(T entity, ReflectPropertyHandler reflectPropertyHandler) {
+	public <T extends Serializable> List<T> findFrom(T entity, AbstractReflectPropertyHandler reflectPropertyHandler) {
 		EntityMeta entityMeta = sqlToyLazyDao.getEntityMeta(entity.getClass());
 		if (StringUtil.isBlank(entityMeta.getListSql())) {
 			throw new DataAccessException(
@@ -399,7 +399,7 @@ public class SqlToyCRUDServiceImpl implements SqlToyCRUDService {
 	@Override
 	@Transactional(propagation = Propagation.SUPPORTS)
 	public <T extends Serializable> PaginationModel<T> findPageFrom(PaginationModel paginationModel, T entity,
-			ReflectPropertyHandler reflectPropertyHandler) {
+			AbstractReflectPropertyHandler reflectPropertyHandler) {
 		EntityMeta entityMeta = sqlToyLazyDao.getEntityMeta(entity.getClass());
 		if (StringUtil.isBlank(entityMeta.getPageSql())) {
 			throw new DataAccessException(
@@ -491,7 +491,7 @@ public class SqlToyCRUDServiceImpl implements SqlToyCRUDService {
 	}
 
 	@Override
-	public void translate(Collection dataSet, String cacheName, TranslateHandler handler) {
+	public void translate(Collection dataSet, String cacheName, AbstractTranslateHandler handler) {
 		sqlToyLazyDao.translate(dataSet, cacheName, null, 1, handler);
 	}
 
@@ -505,7 +505,7 @@ public class SqlToyCRUDServiceImpl implements SqlToyCRUDService {
 	 */
 	@Override
 	public void translate(Collection dataSet, String cacheName, String dictType, Integer index,
-			TranslateHandler handler) {
+			AbstractTranslateHandler handler) {
 		sqlToyLazyDao.translate(dataSet, cacheName, dictType, index, handler);
 	}
 

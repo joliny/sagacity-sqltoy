@@ -2,7 +2,7 @@ package org.sagacity.sqltoy.plugins.function.impl;
 
 import java.util.regex.Pattern;
 
-import org.sagacity.sqltoy.plugins.function.IFunction;
+import org.sagacity.sqltoy.plugins.function.AbstractFunction;
 import org.sagacity.sqltoy.utils.DataSourceUtils.DBType;
 import org.sagacity.sqltoy.utils.StringUtil;
 
@@ -12,7 +12,7 @@ import org.sagacity.sqltoy.utils.StringUtil;
  * @author zhongxuchen
  * @version v1.0,Date:2019-10-21
  */
-public class GroupConcat extends IFunction {
+public class GroupConcat extends AbstractFunction {
 	private static Pattern regex = Pattern.compile("(?i)\\W(group_concat|string_agg)\\(");
 	private static Pattern separtorPattern = Pattern.compile("\\Wseparator\\W");
 

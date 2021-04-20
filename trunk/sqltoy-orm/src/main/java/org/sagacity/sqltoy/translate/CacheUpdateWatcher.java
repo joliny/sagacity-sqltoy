@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.sagacity.sqltoy.SqlToyContext;
-import org.sagacity.sqltoy.translate.cache.TranslateCacheManager;
+import org.sagacity.sqltoy.translate.cache.AbstractTranslateCacheManager;
 import org.sagacity.sqltoy.translate.model.CacheCheckResult;
 import org.sagacity.sqltoy.translate.model.CheckerConfigModel;
 import org.sagacity.sqltoy.translate.model.TimeSection;
@@ -51,7 +51,7 @@ public class CacheUpdateWatcher extends Thread {
 
 	private SqlToyContext sqlToyContext;
 
-	private TranslateCacheManager translateCacheManager;
+	private AbstractTranslateCacheManager translateCacheManager;
 
 	/**
 	 * 默认缓存刷新检测间隔时间(秒)
@@ -68,7 +68,7 @@ public class CacheUpdateWatcher extends Thread {
 	 */
 	private int deviationSeconds = 0;
 
-	public CacheUpdateWatcher(SqlToyContext sqlToyContext, TranslateCacheManager translateCacheManager,
+	public CacheUpdateWatcher(SqlToyContext sqlToyContext, AbstractTranslateCacheManager translateCacheManager,
 			List<CheckerConfigModel> updateCheckers, int delaySeconds, int deviationSeconds) {
 		this.sqlToyContext = sqlToyContext;
 		this.translateCacheManager = translateCacheManager;

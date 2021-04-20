@@ -48,7 +48,7 @@ public class FunctionUtils {
 
 		}
 	};
-	private static List<IFunction> functionConverts = new ArrayList<IFunction>();
+	private static List<AbstractFunction> functionConverts = new ArrayList<AbstractFunction>();
 
 	public static String getDialectSql(String sql, String dialect) {
 		if (functionConverts.isEmpty() || StringUtil.isBlank(dialect) || StringUtil.isBlank(sql)) {
@@ -65,7 +65,7 @@ public class FunctionUtils {
 	 */
 	private static String convertFunctions(String dialect, String sqlContent) {
 		int dbType = DataSourceUtils.getDBType(dialect);
-		IFunction function;
+		AbstractFunction function;
 		String dialectSql = sqlContent;
 		String dialectLow = dialect.toLowerCase();
 		for (int i = 0; i < functionConverts.size(); i++) {
@@ -85,7 +85,7 @@ public class FunctionUtils {
 	 * @param function
 	 * @return
 	 */
-	private static String replaceFunction(String sqlContent, int dbType, IFunction function) {
+	private static String replaceFunction(String sqlContent, int dbType, AbstractFunction function) {
 		String dialectSql = sqlContent;
 		Matcher matcher = function.regex().matcher(dialectSql);
 		int index = -1;
@@ -140,7 +140,7 @@ public class FunctionUtils {
 	 * @param functionConverts the functionConverts to set
 	 */
 	public static void setFunctionConverts(List<String> functionAry) {
-		List<IFunction> converts = new ArrayList<IFunction>();
+		List<AbstractFunction> converts = new ArrayList<AbstractFunction>();
 		try {
 			if (functionAry != null && !functionAry.isEmpty()) {
 				List<String> realConverts = new ArrayList<String>();
@@ -181,14 +181,14 @@ public class FunctionUtils {
 					className = functionName.substring(functionName.lastIndexOf(".") + 1).toLowerCase();
 					// 名字已经存在的排除
 					if (!nameSet.contains(className)) {
-						converts.add((IFunction) (Class.forName(functionName).getDeclaredConstructor().newInstance()));
+						converts.add((AbstractFunction) (Class.forName(functionName).getDeclaredConstructor().newInstance()));
 						nameSet.add(className);
 					}
 				}
 			} // 为null时启用默认配置
 			else {
 				for (String convert : functions) {
-					converts.add((IFunction) (Class.forName(convert).getDeclaredConstructor().newInstance()));
+					converts.add((AbstractFunction) (Class.forName(convert).getDeclaredConstructor().newInstance()));
 				}
 			}
 		} catch (Exception e) {

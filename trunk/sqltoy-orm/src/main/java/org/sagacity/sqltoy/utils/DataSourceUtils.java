@@ -8,7 +8,7 @@ import javax.sql.DataSource;
 
 import org.sagacity.sqltoy.SqlToyConstants;
 import org.sagacity.sqltoy.SqlToyContext;
-import org.sagacity.sqltoy.callback.DataSourceCallbackHandler;
+import org.sagacity.sqltoy.callback.AbstractDataSourceCallbackHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -461,7 +461,7 @@ public class DataSourceUtils {
 	 * @return
 	 */
 	public static Object processDataSource(SqlToyContext sqltoyContext, DataSource datasource,
-			DataSourceCallbackHandler handler) {
+			AbstractDataSourceCallbackHandler handler) {
 		Connection conn = org.springframework.jdbc.datasource.DataSourceUtils.getConnection(datasource);
 		Integer dbType;
 		String dialect;

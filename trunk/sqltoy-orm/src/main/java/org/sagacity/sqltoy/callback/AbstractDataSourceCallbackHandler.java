@@ -11,7 +11,7 @@ import java.sql.Connection;
  * @author zhongxuchen
  * @version v1.0,Date:2012-6-10
  */
-public abstract class DataSourceCallbackHandler {
+public abstract class AbstractDataSourceCallbackHandler {
 	/**
 	 * 结果集
 	 */

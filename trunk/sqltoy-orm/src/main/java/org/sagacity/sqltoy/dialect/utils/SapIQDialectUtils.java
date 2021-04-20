@@ -14,8 +14,8 @@ import java.util.List;
 
 import org.sagacity.sqltoy.SqlExecuteStat;
 import org.sagacity.sqltoy.SqlToyContext;
-import org.sagacity.sqltoy.callback.PreparedStatementResultHandler;
-import org.sagacity.sqltoy.callback.ReflectPropertyHandler;
+import org.sagacity.sqltoy.callback.AbstractPreparedStatementResultHandler;
+import org.sagacity.sqltoy.callback.AbstractReflectPropertyHandler;
 import org.sagacity.sqltoy.config.model.EntityMeta;
 import org.sagacity.sqltoy.config.model.PKStrategy;
 import org.sagacity.sqltoy.config.model.TableCascadeModel;
@@ -67,7 +67,7 @@ public class SapIQDialectUtils {
 		// 无主键,或多主键且非identity、sequence模式
 		boolean noPK = (entityMeta.getIdArray() == null);
 		int pkIndex = entityMeta.getIdIndex();
-		ReflectPropertyHandler handler = DialectUtils.getAddReflectHandler(sqlToyContext, null);
+		AbstractReflectPropertyHandler handler = DialectUtils.getAddReflectHandler(sqlToyContext, null);
 		Object[] fullParamValues = BeanUtil.reflectBeanToAry(entity,
 				(isIdentity || isSequence) ? entityMeta.getRejectIdFieldArray() : entityMeta.getFieldsArray(), null,
 				handler);
@@ -119,7 +119,7 @@ public class SapIQDialectUtils {
 		SqlExecuteStat.showSql("执行iq插入", insertSql, null);
 		final String realInsertSql = insertSql;
 		PreparedStatement pst = null;
-		Object result = SqlUtil.preparedStatementProcess(null, pst, null, new PreparedStatementResultHandler() {
+		Object result = SqlUtil.preparedStatementProcess(null, pst, null, new AbstractPreparedStatementResultHandler() {
 			@Override
             public void execute(Object obj, PreparedStatement pst, ResultSet rs) throws SQLException, IOException {
 				pst = conn.prepareStatement(realInsertSql);
@@ -176,7 +176,7 @@ public class SapIQDialectUtils {
 				if (subTableData != null && !subTableData.isEmpty()) {
 					logger.info("执行save操作的级联子表{}批量保存!", subTableEntityMeta.getTableName());
 					SqlExecuteStat.debug("执行子表级联保存操作", null);
-					saveAll(sqlToyContext, subTableData, sqlToyContext.getBatchSize(), new ReflectPropertyHandler() {
+					saveAll(sqlToyContext, subTableData, sqlToyContext.getBatchSize(), new AbstractReflectPropertyHandler() {
 						@Override
                         public void process() {
 							for (int i = 0; i < mappedFields.length; i++) {
@@ -206,8 +206,8 @@ public class SapIQDialectUtils {
 	 * @throws Exception
 	 */
 	public static Long saveAll(SqlToyContext sqlToyContext, List<?> entities, final int batchSize,
-			ReflectPropertyHandler reflectPropertyHandler, boolean openIdentity, Connection conn, final Integer dbType,
-			String tableName) throws Exception {
+                               AbstractReflectPropertyHandler reflectPropertyHandler, boolean openIdentity, Connection conn, final Integer dbType,
+                               String tableName) throws Exception {
 		EntityMeta entityMeta = sqlToyContext.getEntityMeta(entities.get(0).getClass());
 		String insertSql = DialectExtUtils.generateInsertSql(DBType.SYBASE_IQ, entityMeta, entityMeta.getIdStrategy(),
 				null, "@mySeqVariable", false, tableName);
@@ -236,8 +236,8 @@ public class SapIQDialectUtils {
 	 * @throws Exception
 	 */
 	private static Long saveAll(SqlToyContext sqlToyContext, EntityMeta entityMeta, PKStrategy pkStrategy,
-			boolean isAssignPK, String insertSql, List<?> entities, final int batchSize,
-			ReflectPropertyHandler reflectPropertyHandler, Connection conn, final Integer dbType) throws Exception {
+                                boolean isAssignPK, String insertSql, List<?> entities, final int batchSize,
+                                AbstractReflectPropertyHandler reflectPropertyHandler, Connection conn, final Integer dbType) throws Exception {
 		boolean isIdentity = pkStrategy != null && pkStrategy.equals(PKStrategy.IDENTITY);
 		boolean isSequence = pkStrategy != null && pkStrategy.equals(PKStrategy.SEQUENCE);
 		String[] reflectColumns;
@@ -247,7 +247,7 @@ public class SapIQDialectUtils {
 			reflectColumns = entityMeta.getFieldsArray();
 		}
 
-		ReflectPropertyHandler handler = DialectUtils.getAddReflectHandler(sqlToyContext, reflectPropertyHandler);
+		AbstractReflectPropertyHandler handler = DialectUtils.getAddReflectHandler(sqlToyContext, reflectPropertyHandler);
 		List<Object[]> paramValues = BeanUtil.reflectBeansToInnerAry(entities, reflectColumns, null, handler);
 		int pkIndex = entityMeta.getIdIndex();
 		// 是否存在业务ID

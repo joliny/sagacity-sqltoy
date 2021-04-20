@@ -12,8 +12,8 @@ import java.util.List;
 import org.sagacity.sqltoy.SqlExecuteStat;
 import org.sagacity.sqltoy.SqlToyConstants;
 import org.sagacity.sqltoy.SqlToyContext;
-import org.sagacity.sqltoy.callback.ReflectPropertyHandler;
-import org.sagacity.sqltoy.callback.RowCallbackHandler;
+import org.sagacity.sqltoy.callback.AbstractReflectPropertyHandler;
+import org.sagacity.sqltoy.callback.AbstractRowCallbackHandler;
 import org.sagacity.sqltoy.callback.UpdateRowHandler;
 import org.sagacity.sqltoy.config.model.EntityMeta;
 import org.sagacity.sqltoy.config.model.PKStrategy;
@@ -21,8 +21,8 @@ import org.sagacity.sqltoy.config.model.SqlToyConfig;
 import org.sagacity.sqltoy.config.model.SqlToyResult;
 import org.sagacity.sqltoy.config.model.SqlType;
 import org.sagacity.sqltoy.dialect.Dialect;
-import org.sagacity.sqltoy.dialect.handler.GenerateSavePKStrategy;
-import org.sagacity.sqltoy.dialect.handler.GenerateSqlHandler;
+import org.sagacity.sqltoy.dialect.handler.AbstractGenerateSavePKStrategy;
+import org.sagacity.sqltoy.dialect.handler.AbstractGenerateSqlHandler;
 import org.sagacity.sqltoy.dialect.model.ReturnPkType;
 import org.sagacity.sqltoy.dialect.model.SavePKStrategy;
 import org.sagacity.sqltoy.dialect.utils.DialectExtUtils;
@@ -209,7 +209,7 @@ public class MySqlDialect implements Dialect {
 	 */
 	@Override
     public QueryResult findBySql(final SqlToyContext sqlToyContext, final SqlToyConfig sqlToyConfig, final String sql,
-                                 final Object[] paramsValue, final RowCallbackHandler rowCallbackHandler, final Connection conn,
+                                 final Object[] paramsValue, final AbstractRowCallbackHandler rowCallbackHandler, final Connection conn,
                                  final LockMode lockMode, final Integer dbType, final String dialect, final int fetchSize, final int maxRows)
 			throws Exception {
 		String realSql = sql.concat(getLockSql(sql, dbType, lockMode));
@@ -255,8 +255,8 @@ public class MySqlDialect implements Dialect {
 	 */
 	@Override
 	public Long saveOrUpdateAll(SqlToyContext sqlToyContext, List<?> entities, final int batchSize,
-			ReflectPropertyHandler reflectPropertyHandler, final String[] forceUpdateFields, Connection conn,
-			final Integer dbType, final String dialect, final Boolean autoCommit, final String tableName)
+                                AbstractReflectPropertyHandler reflectPropertyHandler, final String[] forceUpdateFields, Connection conn,
+                                final Integer dbType, final String dialect, final Boolean autoCommit, final String tableName)
 			throws Exception {
 		Long updateCnt = DialectUtils.updateAll(sqlToyContext, entities, batchSize, forceUpdateFields,
 				reflectPropertyHandler, NVL_FUNCTION, conn, dbType, autoCommit, tableName, true);
@@ -281,8 +281,8 @@ public class MySqlDialect implements Dialect {
 	 */
 	@Override
 	public Long saveAllIgnoreExist(SqlToyContext sqlToyContext, List<?> entities, final int batchSize,
-			ReflectPropertyHandler reflectPropertyHandler, Connection conn, final Integer dbType, final String dialect,
-			final Boolean autoCommit, final String tableName) throws Exception {
+                                   AbstractReflectPropertyHandler reflectPropertyHandler, Connection conn, final Integer dbType, final String dialect,
+                                   final Boolean autoCommit, final String tableName) throws Exception {
 		// mysql只支持identity,sequence 值忽略
 		EntityMeta entityMeta = sqlToyContext.getEntityMeta(entities.get(0).getClass());
 		boolean isAssignPK = MySqlDialectUtils.isAssignPKValue(entityMeta.getIdStrategy());
@@ -347,14 +347,14 @@ public class MySqlDialect implements Dialect {
 				&& entityMeta.getIdStrategy().equals(PKStrategy.SEQUENCE)) ? ReturnPkType.GENERATED_KEYS
 						: ReturnPkType.PREPARD_ID;
 		return DialectUtils.save(sqlToyContext, entityMeta, entityMeta.getIdStrategy(), isAssignPK, returnPkType,
-				insertSql, entity, new GenerateSqlHandler() {
+				insertSql, entity, new AbstractGenerateSqlHandler() {
 					@Override
                     public String generateSql(EntityMeta entityMeta, String[] forceUpdateField) {
 						return DialectExtUtils.generateInsertSql(dbType, entityMeta, entityMeta.getIdStrategy(),
 								NVL_FUNCTION, "NEXTVAL FOR " + entityMeta.getSequence(),
 								MySqlDialectUtils.isAssignPKValue(entityMeta.getIdStrategy()), null);
 					}
-				}, new GenerateSavePKStrategy() {
+				}, new AbstractGenerateSavePKStrategy() {
 					@Override
                     public SavePKStrategy generate(EntityMeta entityMeta) {
 						return new SavePKStrategy(entityMeta.getIdStrategy(),
@@ -372,8 +372,8 @@ public class MySqlDialect implements Dialect {
 	 */
 	@Override
 	public Long saveAll(SqlToyContext sqlToyContext, List<?> entities, final int batchSize,
-			ReflectPropertyHandler reflectPropertyHandler, Connection conn, final Integer dbType, final String dialect,
-			final Boolean autoCommit, final String tableName) throws Exception {
+                        AbstractReflectPropertyHandler reflectPropertyHandler, Connection conn, final Integer dbType, final String dialect,
+                        final Boolean autoCommit, final String tableName) throws Exception {
 		// mysql只支持identity,sequence 值忽略
 		EntityMeta entityMeta = sqlToyContext.getEntityMeta(entities.get(0).getClass());
 		boolean isAssignPK = MySqlDialectUtils.isAssignPKValue(entityMeta.getIdStrategy());
@@ -396,7 +396,7 @@ public class MySqlDialect implements Dialect {
 			final HashMap<Class, String[]> subTableForceUpdateProps, Connection conn, final Integer dbType,
 			final String dialect, final String tableName) throws Exception {
 		return DialectUtils.update(sqlToyContext, entity, NVL_FUNCTION, forceUpdateFields, cascade,
-				(cascade == false) ? null : new GenerateSqlHandler() {
+				(cascade == false) ? null : new AbstractGenerateSqlHandler() {
 					@Override
                     public String generateSql(EntityMeta entityMeta, String[] forceUpdateFields) {
 						return MySqlDialectUtils.getSaveOrUpdateSql(dbType, entityMeta, forceUpdateFields, null);
@@ -413,8 +413,8 @@ public class MySqlDialect implements Dialect {
 	 */
 	@Override
 	public Long updateAll(SqlToyContext sqlToyContext, List<?> entities, final int batchSize,
-			final String[] forceUpdateFields, ReflectPropertyHandler reflectPropertyHandler, Connection conn,
-			final Integer dbType, final String dialect, final Boolean autoCommit, final String tableName)
+                          final String[] forceUpdateFields, AbstractReflectPropertyHandler reflectPropertyHandler, Connection conn,
+                          final Integer dbType, final String dialect, final Boolean autoCommit, final String tableName)
 			throws Exception {
 		return DialectUtils.updateAll(sqlToyContext, entities, batchSize, forceUpdateFields, reflectPropertyHandler,
 				NVL_FUNCTION, conn, dbType, autoCommit, tableName, false);

@@ -9,7 +9,7 @@ import javax.sql.DataSource;
 
 import org.sagacity.sqltoy.SqlToyContext;
 import org.sagacity.sqltoy.callback.InsertRowCallbackHandler;
-import org.sagacity.sqltoy.callback.ReflectPropertyHandler;
+import org.sagacity.sqltoy.callback.AbstractReflectPropertyHandler;
 import org.sagacity.sqltoy.config.model.SqlToyConfig;
 import org.sagacity.sqltoy.config.model.SqlType;
 import org.sagacity.sqltoy.utils.StringUtil;
@@ -40,7 +40,7 @@ public class Batch extends BaseLink {
 	/**
 	 * 参数值反调处理器
 	 */
-	private ReflectPropertyHandler reflectPropertyHandler;
+	private AbstractReflectPropertyHandler reflectPropertyHandler;
 
 	/**
 	 * 插入反调处理器
@@ -96,7 +96,7 @@ public class Batch extends BaseLink {
 		return this;
 	}
 
-	public Batch reflectHandler(ReflectPropertyHandler reflectPropertyHandler) {
+	public Batch reflectHandler(AbstractReflectPropertyHandler reflectPropertyHandler) {
 		this.reflectPropertyHandler = reflectPropertyHandler;
 		return this;
 	}

@@ -5,7 +5,7 @@ import java.sql.Connection;
 import javax.sql.DataSource;
 
 import org.sagacity.sqltoy.SqlToyContext;
-import org.sagacity.sqltoy.callback.DataSourceCallbackHandler;
+import org.sagacity.sqltoy.callback.AbstractDataSourceCallbackHandler;
 import org.sagacity.sqltoy.link.Batch;
 import org.sagacity.sqltoy.link.Delete;
 import org.sagacity.sqltoy.link.Elastic;
@@ -183,7 +183,7 @@ public class LinkDaoSupport {
 	 * @param dataSource
 	 */
 	protected void flush(DataSource dataSource) {
-		DataSourceUtils.processDataSource(sqlToyContext, getDataSource(dataSource), new DataSourceCallbackHandler() {
+		DataSourceUtils.processDataSource(sqlToyContext, getDataSource(dataSource), new AbstractDataSourceCallbackHandler() {
 			@Override
             public void doConnection(Connection conn, Integer dbType, String dialect) throws Exception {
 				if (!conn.isClosed()) {

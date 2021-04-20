@@ -10,7 +10,7 @@ import java.sql.ResultSet;
 import java.util.List;
 
 import org.sagacity.sqltoy.SqlToyContext;
-import org.sagacity.sqltoy.callback.CallableStatementResultHandler;
+import org.sagacity.sqltoy.callback.AbstractCallableStatementResultHandler;
 import org.sagacity.sqltoy.config.model.EntityMeta;
 import org.sagacity.sqltoy.config.model.PKStrategy;
 import org.sagacity.sqltoy.config.model.SqlToyConfig;
@@ -154,7 +154,7 @@ public class OracleDialectUtils {
 			final Integer dbType) throws Exception {
 		CallableStatement callStat = null;
 		ResultSet rs = null;
-		return (StoreResult) SqlUtil.callableStatementProcess(null, callStat, rs, new CallableStatementResultHandler() {
+		return (StoreResult) SqlUtil.callableStatementProcess(null, callStat, rs, new AbstractCallableStatementResultHandler() {
 			@Override
             public void execute(Object obj, CallableStatement callStat, ResultSet rs) throws Exception {
 				callStat = conn.prepareCall(storeSql);

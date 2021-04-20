@@ -11,7 +11,7 @@ import javax.sql.DataSource;
 
 import org.sagacity.sqltoy.SqlToyContext;
 import org.sagacity.sqltoy.callback.InsertRowCallbackHandler;
-import org.sagacity.sqltoy.callback.ReflectPropertyHandler;
+import org.sagacity.sqltoy.callback.AbstractReflectPropertyHandler;
 import org.sagacity.sqltoy.callback.UpdateRowHandler;
 import org.sagacity.sqltoy.config.model.EntityMeta;
 import org.sagacity.sqltoy.config.model.SqlToyConfig;
@@ -39,7 +39,7 @@ import org.sagacity.sqltoy.model.ParallelConfig;
 import org.sagacity.sqltoy.model.QueryResult;
 import org.sagacity.sqltoy.model.StoreResult;
 import org.sagacity.sqltoy.model.TreeTableModel;
-import org.sagacity.sqltoy.translate.TranslateHandler;
+import org.sagacity.sqltoy.translate.AbstractTranslateHandler;
 
 /**
  * @project sqltoy-orm
@@ -148,7 +148,7 @@ public interface SqlToyLazyDao {
 	 * @param reflectPropertyHandler
 	 */
 	@Deprecated
-	public <T extends Serializable> Long saveAll(List<T> entities, ReflectPropertyHandler reflectPropertyHandler);
+	public <T extends Serializable> Long saveAll(List<T> entities, AbstractReflectPropertyHandler reflectPropertyHandler);
 
 	// sqltoy的update内部处理是考虑属性为null情况的，一次交互完成，比jpa更加合理，可以深入了解
 	/**
@@ -197,7 +197,7 @@ public interface SqlToyLazyDao {
 	 * @param reflectPropertyHandler 用于通过反射机制设置属性值
 	 * @param forceUpdateProps       强制修改的属性
 	 */
-	public <T extends Serializable> Long updateAll(List<T> entities, ReflectPropertyHandler reflectPropertyHandler,
+	public <T extends Serializable> Long updateAll(List<T> entities, AbstractReflectPropertyHandler reflectPropertyHandler,
 			String... forceUpdateProps);
 
 	/**
@@ -217,7 +217,7 @@ public interface SqlToyLazyDao {
 	 */
 	@Deprecated
 	public <T extends Serializable> Long updateAllDeeply(List<T> entities,
-			ReflectPropertyHandler reflectPropertyHandler);
+			AbstractReflectPropertyHandler reflectPropertyHandler);
 
 	/**
 	 * @todo 保存或修改数据并返回数据库记录变更数量
@@ -245,7 +245,7 @@ public interface SqlToyLazyDao {
 	 */
 	@Deprecated
 	public <T extends Serializable> Long saveOrUpdateAll(List<T> entities,
-			ReflectPropertyHandler reflectPropertyHandler, String... forceUpdateProps);
+                                                         AbstractReflectPropertyHandler reflectPropertyHandler, String... forceUpdateProps);
 
 	/**
 	 * @todo 删除单条对象并返回数据库记录影响的数量
@@ -658,7 +658,7 @@ public interface SqlToyLazyDao {
 	 */
 	@Deprecated
 	public Long executeSql(final String sqlOrNamedSql, final Serializable entity,
-			final ReflectPropertyHandler reflectPropertyHandler);
+			final AbstractReflectPropertyHandler reflectPropertyHandler);
 
 	/**
 	 * @TODO 通过数组传参执行sql,并返回更新记录量
@@ -742,7 +742,7 @@ public interface SqlToyLazyDao {
 	 * @param cacheName
 	 * @param handler
 	 */
-	public void translate(Collection dataSet, String cacheName, TranslateHandler handler);
+	public void translate(Collection dataSet, String cacheName, AbstractTranslateHandler handler);
 
 	/**
 	 * @todo 对记录通过反调自定义对那个属性进行翻译
@@ -753,7 +753,7 @@ public interface SqlToyLazyDao {
 	 * @param handler
 	 */
 	public void translate(Collection dataSet, String cacheName, String cacheType, Integer cacheNameIndex,
-			TranslateHandler handler);
+			AbstractTranslateHandler handler);
 
 	/**
 	 * @todo 判断缓存是否存在

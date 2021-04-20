@@ -21,9 +21,9 @@ import javax.sql.DataSource;
 
 import org.sagacity.sqltoy.SqlToyConstants;
 import org.sagacity.sqltoy.SqlToyContext;
-import org.sagacity.sqltoy.callback.DataSourceCallbackHandler;
+import org.sagacity.sqltoy.callback.AbstractDataSourceCallbackHandler;
 import org.sagacity.sqltoy.callback.InsertRowCallbackHandler;
-import org.sagacity.sqltoy.callback.ReflectPropertyHandler;
+import org.sagacity.sqltoy.callback.AbstractReflectPropertyHandler;
 import org.sagacity.sqltoy.callback.UpdateRowHandler;
 import org.sagacity.sqltoy.config.SqlConfigParseUtils;
 import org.sagacity.sqltoy.config.model.EntityMeta;
@@ -59,7 +59,7 @@ import org.sagacity.sqltoy.plugins.IUnifyFieldsHandler;
 import org.sagacity.sqltoy.plugins.datasource.DataSourceSelector;
 import org.sagacity.sqltoy.plugins.id.IdGenerator;
 import org.sagacity.sqltoy.plugins.id.impl.RedisIdGenerator;
-import org.sagacity.sqltoy.translate.TranslateHandler;
+import org.sagacity.sqltoy.translate.AbstractTranslateHandler;
 import org.sagacity.sqltoy.utils.BeanUtil;
 import org.sagacity.sqltoy.utils.BeanWrapper;
 import org.sagacity.sqltoy.utils.CollectionUtil;
@@ -486,7 +486,7 @@ public class SqlToyDaoSupport {
 	 * @return
 	 */
 	protected Long executeSql(final String sqlOrNamedSql, final Serializable entity,
-			final ReflectPropertyHandler reflectPropertyHandler) {
+			final AbstractReflectPropertyHandler reflectPropertyHandler) {
 		SqlToyConfig sqlToyConfig = getSqlToyConfig(sqlOrNamedSql, SqlType.update);
 		// 根据sql中的变量从entity对象中提取参数值
 		Object[] paramValues = BeanUtil.reflectBeanToAry(entity, sqlToyConfig.getParamsName(), null,
@@ -533,7 +533,7 @@ public class SqlToyDaoSupport {
 	 * @param autoCommit
 	 */
 	protected Long batchUpdate(final String sqlOrNamedSql, final List dataSet,
-			final ReflectPropertyHandler reflectPropertyHandler, final Boolean autoCommit) {
+                               final AbstractReflectPropertyHandler reflectPropertyHandler, final Boolean autoCommit) {
 		// 例如sql 为:merge into table update set xxx=:param
 		// dataSet可以是VO List,可以根据属性自动映射到:param
 		return batchUpdate(sqlOrNamedSql, dataSet, sqlToyContext.getBatchSize(), reflectPropertyHandler, null,
@@ -549,8 +549,8 @@ public class SqlToyDaoSupport {
 	 * @param autoCommit
 	 */
 	protected Long batchUpdate(final String sqlOrNamedSql, final List dataSet,
-			final ReflectPropertyHandler reflectPropertyHandler, final InsertRowCallbackHandler insertCallhandler,
-			final Boolean autoCommit) {
+                               final AbstractReflectPropertyHandler reflectPropertyHandler, final InsertRowCallbackHandler insertCallhandler,
+                               final Boolean autoCommit) {
 		return batchUpdate(sqlOrNamedSql, dataSet, sqlToyContext.getBatchSize(), reflectPropertyHandler,
 				insertCallhandler, autoCommit, null);
 	}
@@ -579,8 +579,8 @@ public class SqlToyDaoSupport {
 	 * @param dataSource
 	 */
 	protected Long batchUpdate(final String sqlOrNamedSql, final List dataSet, final int batchSize,
-			final ReflectPropertyHandler reflectPropertyHandler, final InsertRowCallbackHandler insertCallhandler,
-			final Boolean autoCommit, final DataSource dataSource) {
+                               final AbstractReflectPropertyHandler reflectPropertyHandler, final InsertRowCallbackHandler insertCallhandler,
+                               final Boolean autoCommit, final DataSource dataSource) {
 		SqlToyConfig sqlToyConfig = sqlToyContext.getSqlToyConfig(sqlOrNamedSql, SqlType.update,
 				getDialect(dataSource));
 		return dialectFactory.batchUpdate(sqlToyContext, sqlToyConfig, dataSet, batchSize, reflectPropertyHandler,
@@ -824,7 +824,7 @@ public class SqlToyDaoSupport {
 	 * @param reflectPropertyHandler
 	 */
 	protected <T extends Serializable> Long saveAll(final List<T> entities,
-			final ReflectPropertyHandler reflectPropertyHandler) {
+			final AbstractReflectPropertyHandler reflectPropertyHandler) {
 		return this.saveAll(entities, reflectPropertyHandler, null);
 	}
 
@@ -835,7 +835,7 @@ public class SqlToyDaoSupport {
 	 * @param dataSource
 	 */
 	protected <T extends Serializable> Long saveAll(final List<T> entities,
-			final ReflectPropertyHandler reflectPropertyHandler, final DataSource dataSource) {
+                                                    final AbstractReflectPropertyHandler reflectPropertyHandler, final DataSource dataSource) {
 		return dialectFactory.saveAll(sqlToyContext, entities, sqlToyContext.getBatchSize(), reflectPropertyHandler,
 				this.getDataSource(dataSource), null);
 	}
@@ -866,7 +866,7 @@ public class SqlToyDaoSupport {
 	 * @param dataSource
 	 */
 	protected <T extends Serializable> Long saveAllIgnoreExist(final List<T> entities,
-			final ReflectPropertyHandler reflectPropertyHandler, final DataSource dataSource) {
+                                                               final AbstractReflectPropertyHandler reflectPropertyHandler, final DataSource dataSource) {
 		return dialectFactory.saveAllIgnoreExist(sqlToyContext, entities, sqlToyContext.getBatchSize(),
 				reflectPropertyHandler, this.getDataSource(dataSource), null);
 	}
@@ -932,7 +932,7 @@ public class SqlToyDaoSupport {
 	}
 
 	protected <T extends Serializable> Long updateAll(final List<T> entities,
-			final ReflectPropertyHandler reflectPropertyHandler, final String... forceUpdateProps) {
+                                                      final AbstractReflectPropertyHandler reflectPropertyHandler, final String... forceUpdateProps) {
 		return this.updateAll(entities, reflectPropertyHandler, forceUpdateProps, null);
 	}
 
@@ -944,8 +944,8 @@ public class SqlToyDaoSupport {
 	 * @param dataSource
 	 */
 	protected <T extends Serializable> Long updateAll(final List<T> entities,
-			final ReflectPropertyHandler reflectPropertyHandler, final String[] forceUpdateProps,
-			final DataSource dataSource) {
+                                                      final AbstractReflectPropertyHandler reflectPropertyHandler, final String[] forceUpdateProps,
+                                                      final DataSource dataSource) {
 		return dialectFactory.updateAll(sqlToyContext, entities, sqlToyContext.getBatchSize(), forceUpdateProps,
 				reflectPropertyHandler, this.getDataSource(dataSource), null);
 	}
@@ -956,7 +956,7 @@ public class SqlToyDaoSupport {
 	 * @param reflectPropertyHandler
 	 */
 	protected <T extends Serializable> Long updateAllDeeply(final List<T> entities,
-			final ReflectPropertyHandler reflectPropertyHandler) {
+			final AbstractReflectPropertyHandler reflectPropertyHandler) {
 		return updateAllDeeply(entities, reflectPropertyHandler, null);
 	}
 
@@ -967,7 +967,7 @@ public class SqlToyDaoSupport {
 	 * @param dataSource
 	 */
 	protected <T extends Serializable> Long updateAllDeeply(final List<T> entities,
-			final ReflectPropertyHandler reflectPropertyHandler, final DataSource dataSource) {
+                                                            final AbstractReflectPropertyHandler reflectPropertyHandler, final DataSource dataSource) {
 		if (entities == null || entities.isEmpty()) {
 			return 0L;
 		}
@@ -1007,7 +1007,7 @@ public class SqlToyDaoSupport {
 	 * @param forceUpdateProps
 	 */
 	protected <T extends Serializable> Long saveOrUpdateAll(final List<T> entities,
-			final ReflectPropertyHandler reflectPropertyHandler, final String... forceUpdateProps) {
+                                                            final AbstractReflectPropertyHandler reflectPropertyHandler, final String... forceUpdateProps) {
 		return this.saveOrUpdateAll(entities, reflectPropertyHandler, forceUpdateProps, null);
 	}
 
@@ -1019,8 +1019,8 @@ public class SqlToyDaoSupport {
 	 * @param dataSource
 	 */
 	protected <T extends Serializable> Long saveOrUpdateAll(final List<T> entities,
-			final ReflectPropertyHandler reflectPropertyHandler, final String[] forceUpdateProps,
-			final DataSource dataSource) {
+                                                            final AbstractReflectPropertyHandler reflectPropertyHandler, final String[] forceUpdateProps,
+                                                            final DataSource dataSource) {
 		return dialectFactory.saveOrUpdateAll(sqlToyContext, entities, sqlToyContext.getBatchSize(), forceUpdateProps,
 				reflectPropertyHandler, this.getDataSource(dataSource), null);
 	}
@@ -1166,7 +1166,7 @@ public class SqlToyDaoSupport {
 	 */
 	protected void flush(DataSource dataSource) {
 		DataSourceUtils.processDataSource(sqlToyContext, this.getDataSource(dataSource),
-				new DataSourceCallbackHandler() {
+				new AbstractDataSourceCallbackHandler() {
 					@Override
                     public void doConnection(Connection conn, Integer dbType, String dialect) throws Exception {
 						if (!conn.isClosed()) {
@@ -1298,7 +1298,7 @@ public class SqlToyDaoSupport {
 	 * @param handler        2个方法:getKey(Object row),setName(Object row,String name)
 	 */
 	protected void translate(Collection dataSet, String cacheName, String cacheType, Integer cacheNameIndex,
-			TranslateHandler handler) {
+			AbstractTranslateHandler handler) {
 		// 数据以及合法性校验
 		if (dataSet == null || dataSet.isEmpty()) {
 			return;

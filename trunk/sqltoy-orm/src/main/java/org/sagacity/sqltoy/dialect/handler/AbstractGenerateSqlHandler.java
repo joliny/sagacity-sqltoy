@@ -11,7 +11,7 @@ import org.sagacity.sqltoy.config.model.EntityMeta;
  * @author zhongxuchen
  * @version v1.0,Date:2015年3月5日
  */
-public abstract class GenerateSqlHandler {
+public abstract class AbstractGenerateSqlHandler {
 	/**
 	 * @todo 根据pojo的meta产生特定的诸如：insert、update等sql
 	 * @param entityMeta

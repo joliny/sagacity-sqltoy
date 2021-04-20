@@ -6,7 +6,7 @@ package org.sagacity.sqltoy.translate;
  * @author zhongxuchen
  * @version v1.0,Date:2019-05-20
  */
-public abstract class TranslateHandler {
+public abstract class AbstractTranslateHandler {
 	/**
 	 * @todo 从行记录中获取key
 	 * @param row

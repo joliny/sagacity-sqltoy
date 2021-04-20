@@ -4,7 +4,7 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import org.sagacity.sqltoy.translate.cache.TranslateCacheManager;
+import org.sagacity.sqltoy.translate.cache.AbstractTranslateCacheManager;
 import org.sagacity.sqltoy.translate.model.TranslateConfigModel;
 import org.sagacity.sqltoy.utils.StringUtil;
 import org.slf4j.Logger;
@@ -21,7 +21,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
  * @version v1.0, Date:2021-1-25
  * @modify 2021-1-25,修改说明
  */
-public class TranslateCaffeineManager extends TranslateCacheManager {
+public class TranslateCaffeineManager extends AbstractTranslateCacheManager {
 	/**
 	 * 定义全局日志
 	 */

@@ -12,8 +12,8 @@ import java.util.regex.Pattern;
 
 import org.sagacity.sqltoy.SqlToyConstants;
 import org.sagacity.sqltoy.SqlToyContext;
-import org.sagacity.sqltoy.callback.ReflectPropertyHandler;
-import org.sagacity.sqltoy.callback.RowCallbackHandler;
+import org.sagacity.sqltoy.callback.AbstractReflectPropertyHandler;
+import org.sagacity.sqltoy.callback.AbstractRowCallbackHandler;
 import org.sagacity.sqltoy.callback.UpdateRowHandler;
 import org.sagacity.sqltoy.config.model.EntityMeta;
 import org.sagacity.sqltoy.config.model.PKStrategy;
@@ -22,7 +22,7 @@ import org.sagacity.sqltoy.config.model.SqlToyResult;
 import org.sagacity.sqltoy.config.model.SqlType;
 import org.sagacity.sqltoy.config.model.SqlWithAnalysis;
 import org.sagacity.sqltoy.dialect.Dialect;
-import org.sagacity.sqltoy.dialect.handler.GenerateSqlHandler;
+import org.sagacity.sqltoy.dialect.handler.AbstractGenerateSqlHandler;
 import org.sagacity.sqltoy.dialect.utils.DialectExtUtils;
 import org.sagacity.sqltoy.dialect.utils.DialectUtils;
 import org.sagacity.sqltoy.dialect.utils.SqlServerDialectUtils;
@@ -203,7 +203,7 @@ public class SqlServerDialect implements Dialect {
 	 */
 	@Override
     public QueryResult findBySql(final SqlToyContext sqlToyContext, final SqlToyConfig sqlToyConfig, final String sql,
-                                 final Object[] paramsValue, final RowCallbackHandler rowCallbackHandler, final Connection conn,
+                                 final Object[] paramsValue, final AbstractRowCallbackHandler rowCallbackHandler, final Connection conn,
                                  final LockMode lockMode, final Integer dbType, final String dialect, final int fetchSize, final int maxRows)
 			throws Exception {
 		String realSql = SqlServerDialectUtils.lockSql(sql, null, lockMode);
@@ -248,8 +248,8 @@ public class SqlServerDialect implements Dialect {
 	 */
 	@Override
 	public Long saveOrUpdateAll(SqlToyContext sqlToyContext, List<?> entities, final int batchSize,
-			final ReflectPropertyHandler reflectPropertyHandler, final String[] forceUpdateFields, Connection conn,
-			final Integer dbType, final String dialect, final Boolean autoCommit, final String tableName)
+                                final AbstractReflectPropertyHandler reflectPropertyHandler, final String[] forceUpdateFields, Connection conn,
+                                final Integer dbType, final String dialect, final Boolean autoCommit, final String tableName)
 			throws Exception {
 		// 为什么不共用oracle等merge方法,因为sqlserver不支持timestamp类型的数据进行插入和修改赋值
 		return SqlServerDialectUtils.saveOrUpdateAll(sqlToyContext, entities, batchSize, reflectPropertyHandler,
@@ -266,14 +266,14 @@ public class SqlServerDialect implements Dialect {
 	 */
 	@Override
 	public Long saveAllIgnoreExist(SqlToyContext sqlToyContext, List<?> entities, final int batchSize,
-			ReflectPropertyHandler reflectPropertyHandler, Connection conn, final Integer dbType, final String dialect,
-			final Boolean autoCommit, final String tableName) throws Exception {
+                                   AbstractReflectPropertyHandler reflectPropertyHandler, Connection conn, final Integer dbType, final String dialect,
+                                   final Boolean autoCommit, final String tableName) throws Exception {
 		EntityMeta entityMeta = sqlToyContext.getEntityMeta(entities.get(0).getClass());
 		final String realTable = entityMeta.getSchemaTable(tableName);
 		// sqlserver merge into must end with ";" charater
 		// 返回变更的记录数量
 		return DialectUtils.saveAllIgnoreExist(sqlToyContext, entities, batchSize, entityMeta,
-				new GenerateSqlHandler() {
+				new AbstractGenerateSqlHandler() {
 					@Override
                     public String generateSql(EntityMeta entityMeta, String[] forceUpdateFields) {
 						String sql = SqlServerDialectUtils.getSaveIgnoreExistSql(dbType, entityMeta,
@@ -342,8 +342,8 @@ public class SqlServerDialect implements Dialect {
 	 */
 	@Override
 	public Long saveAll(SqlToyContext sqlToyContext, List<?> entities, final int batchSize,
-			ReflectPropertyHandler reflectPropertyHandler, Connection conn, final Integer dbType, final String dialect,
-			final Boolean autoCommit, final String tableName) throws Exception {
+                        AbstractReflectPropertyHandler reflectPropertyHandler, Connection conn, final Integer dbType, final String dialect,
+                        final Boolean autoCommit, final String tableName) throws Exception {
 		return SqlServerDialectUtils.saveAll(sqlToyContext, entities, reflectPropertyHandler, conn, dbType, autoCommit,
 				tableName);
 	}
@@ -373,8 +373,8 @@ public class SqlServerDialect implements Dialect {
 	 */
 	@Override
 	public Long updateAll(SqlToyContext sqlToyContext, List<?> entities, final int batchSize,
-			final String[] forceUpdateFields, ReflectPropertyHandler reflectPropertyHandler, Connection conn,
-			final Integer dbType, final String dialect, final Boolean autoCommit, final String tableName)
+                          final String[] forceUpdateFields, AbstractReflectPropertyHandler reflectPropertyHandler, Connection conn,
+                          final Integer dbType, final String dialect, final Boolean autoCommit, final String tableName)
 			throws Exception {
 		return DialectUtils.updateAll(sqlToyContext, entities, batchSize, forceUpdateFields, reflectPropertyHandler,
 				NVL_FUNCTION, conn, dbType, autoCommit, tableName, false);

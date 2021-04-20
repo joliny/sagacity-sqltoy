@@ -15,7 +15,7 @@ import org.sagacity.sqltoy.config.model.SqlToyConfig;
 import org.sagacity.sqltoy.config.model.SqlType;
 import org.sagacity.sqltoy.executor.QueryExecutor;
 import org.sagacity.sqltoy.plugins.IUnifyFieldsHandler;
-import org.sagacity.sqltoy.plugins.TypeHandler;
+import org.sagacity.sqltoy.plugins.AbstractTypeHandler;
 import org.sagacity.sqltoy.plugins.datasource.DataSourceSelector;
 import org.sagacity.sqltoy.plugins.datasource.ObtainDataSource;
 import org.sagacity.sqltoy.plugins.datasource.impl.DefaultDataSourceSelector;
@@ -23,7 +23,7 @@ import org.sagacity.sqltoy.plugins.datasource.impl.DefaultObtainDataSource;
 import org.sagacity.sqltoy.plugins.function.FunctionUtils;
 import org.sagacity.sqltoy.plugins.sharding.ShardingStrategy;
 import org.sagacity.sqltoy.translate.TranslateManager;
-import org.sagacity.sqltoy.translate.cache.TranslateCacheManager;
+import org.sagacity.sqltoy.translate.cache.AbstractTranslateCacheManager;
 import org.sagacity.sqltoy.translate.cache.impl.TranslateCaffeineManager;
 import org.sagacity.sqltoy.utils.BeanUtil;
 import org.sagacity.sqltoy.utils.DataSourceUtils.Dialect;
@@ -104,7 +104,7 @@ public class SqlToyContext implements ApplicationContextAware {
 	/**
 	 * 具体缓存实现(默认ehcache,可以根据自己喜好来自行扩展实现,sqltoy习惯将有争议的提供默认实现但用户可自行选择)
 	 */
-	private TranslateCacheManager translateCacheManager;
+	private AbstractTranslateCacheManager translateCacheManager;
 
 	/**
 	 * @param unifyFieldsHandler the unifyFieldsHandler to set
@@ -211,7 +211,7 @@ public class SqlToyContext implements ApplicationContextAware {
 	/**
 	 * 提供自定义类型处理器,一般针对json等类型
 	 */
-	private TypeHandler typeHandler;
+	private AbstractTypeHandler typeHandler;
 
 	/**
 	 * dataSource选择器，提供给开发者扩展窗口
@@ -797,7 +797,7 @@ public class SqlToyContext implements ApplicationContextAware {
 		this.delayCheckSeconds = delayCheckSeconds;
 	}
 
-	public void setTranslateCacheManager(TranslateCacheManager translateCacheManager) {
+	public void setTranslateCacheManager(AbstractTranslateCacheManager translateCacheManager) {
 		this.translateCacheManager = translateCacheManager;
 	}
 
@@ -819,14 +819,14 @@ public class SqlToyContext implements ApplicationContextAware {
 	/**
 	 * @return the typeHandler
 	 */
-	public TypeHandler getTypeHandler() {
+	public AbstractTypeHandler getTypeHandler() {
 		return typeHandler;
 	}
 
 	/**
 	 * @param typeHandler the typeHandler to set
 	 */
-	public void setTypeHandler(TypeHandler typeHandler) {
+	public void setTypeHandler(AbstractTypeHandler typeHandler) {
 		this.typeHandler = typeHandler;
 	}
 

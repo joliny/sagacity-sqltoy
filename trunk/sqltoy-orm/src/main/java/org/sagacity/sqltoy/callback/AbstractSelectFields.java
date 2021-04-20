@@ -7,7 +7,7 @@ package org.sagacity.sqltoy.callback;
  * @version v1.0, Date:2020-10-15
  * @modify 2020-10-15,修改说明
  */
-public abstract class SelectFields {
+public abstract class AbstractSelectFields {
 	/**
 	 * @TODO 获取最终查询字段
 	 * @return

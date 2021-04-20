@@ -8,7 +8,7 @@ import java.io.Serializable;
 import javax.sql.DataSource;
 
 import org.sagacity.sqltoy.SqlToyContext;
-import org.sagacity.sqltoy.callback.ReflectPropertyHandler;
+import org.sagacity.sqltoy.callback.AbstractReflectPropertyHandler;
 import org.sagacity.sqltoy.config.model.SqlToyConfig;
 import org.sagacity.sqltoy.config.model.SqlType;
 import org.sagacity.sqltoy.utils.BeanUtil;
@@ -39,7 +39,7 @@ public class Execute extends BaseLink {
 	/**
 	 * 参数反调设置器(特殊情况下使用)
 	 */
-	private ReflectPropertyHandler reflectPropertyHandler;
+	private AbstractReflectPropertyHandler reflectPropertyHandler;
 
 	/**
 	 * 是否自动提交
@@ -90,7 +90,7 @@ public class Execute extends BaseLink {
 		return this;
 	}
 
-	public Execute reflectHandler(ReflectPropertyHandler reflectPropertyHandler) {
+	public Execute reflectHandler(AbstractReflectPropertyHandler reflectPropertyHandler) {
 		this.reflectPropertyHandler = reflectPropertyHandler;
 		return this;
 	}

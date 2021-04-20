@@ -9,7 +9,7 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.sagacity.sqltoy.SqlToyContext;
-import org.sagacity.sqltoy.callback.ReflectPropertyHandler;
+import org.sagacity.sqltoy.callback.AbstractReflectPropertyHandler;
 import org.sagacity.sqltoy.model.SaveMode;
 
 /**
@@ -44,7 +44,7 @@ public class Save extends BaseLink {
 	 * 针对个别属性强制统一赋值
 	 */
 	@Deprecated
-	private ReflectPropertyHandler reflectPropertyHandler;
+	private AbstractReflectPropertyHandler reflectPropertyHandler;
 
 	/**
 	 * 批处理提交记录数量
@@ -59,7 +59,7 @@ public class Save extends BaseLink {
 		super(sqlToyContext, dataSource);
 	}
 
-	public Save reflectHandler(ReflectPropertyHandler reflectPropertyHandler) {
+	public Save reflectHandler(AbstractReflectPropertyHandler reflectPropertyHandler) {
 		this.reflectPropertyHandler = reflectPropertyHandler;
 		return this;
 	}

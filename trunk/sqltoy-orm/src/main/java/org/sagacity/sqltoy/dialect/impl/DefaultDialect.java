@@ -10,8 +10,8 @@ import java.util.List;
 
 import org.sagacity.sqltoy.SqlToyConstants;
 import org.sagacity.sqltoy.SqlToyContext;
-import org.sagacity.sqltoy.callback.ReflectPropertyHandler;
-import org.sagacity.sqltoy.callback.RowCallbackHandler;
+import org.sagacity.sqltoy.callback.AbstractReflectPropertyHandler;
+import org.sagacity.sqltoy.callback.AbstractRowCallbackHandler;
 import org.sagacity.sqltoy.callback.UpdateRowHandler;
 import org.sagacity.sqltoy.config.model.EntityMeta;
 import org.sagacity.sqltoy.config.model.PKStrategy;
@@ -19,8 +19,8 @@ import org.sagacity.sqltoy.config.model.SqlToyConfig;
 import org.sagacity.sqltoy.config.model.SqlToyResult;
 import org.sagacity.sqltoy.config.model.SqlType;
 import org.sagacity.sqltoy.dialect.Dialect;
-import org.sagacity.sqltoy.dialect.handler.GenerateSavePKStrategy;
-import org.sagacity.sqltoy.dialect.handler.GenerateSqlHandler;
+import org.sagacity.sqltoy.dialect.handler.AbstractGenerateSavePKStrategy;
+import org.sagacity.sqltoy.dialect.handler.AbstractGenerateSqlHandler;
 import org.sagacity.sqltoy.dialect.model.ReturnPkType;
 import org.sagacity.sqltoy.dialect.model.SavePKStrategy;
 import org.sagacity.sqltoy.dialect.utils.DialectExtUtils;
@@ -171,8 +171,8 @@ public class DefaultDialect implements Dialect {
 
 	@Override
 	public QueryResult findBySql(SqlToyContext sqlToyContext, SqlToyConfig sqlToyConfig, String sql,
-			Object[] paramsValue, RowCallbackHandler rowCallbackHandler, Connection conn, LockMode lockMode,
-			Integer dbType, String dialect, int fetchSize, int maxRows) throws Exception {
+                                 Object[] paramsValue, AbstractRowCallbackHandler rowCallbackHandler, Connection conn, LockMode lockMode,
+                                 Integer dbType, String dialect, int fetchSize, int maxRows) throws Exception {
 		String realSql = sql.concat(getLockSql(sql, dbType, lockMode));
 		return DialectUtils.findBySql(sqlToyContext, sqlToyConfig, realSql, paramsValue, rowCallbackHandler, conn,
 				dbType, 0, fetchSize, maxRows);
@@ -219,14 +219,14 @@ public class DefaultDialect implements Dialect {
 				&& entityMeta.getIdStrategy().equals(PKStrategy.SEQUENCE)) ? ReturnPkType.GENERATED_KEYS
 						: ReturnPkType.PREPARD_ID;
 		return DialectUtils.save(sqlToyContext, entityMeta, entityMeta.getIdStrategy(), isAssignPK, returnPkType,
-				insertSql, entity, new GenerateSqlHandler() {
+				insertSql, entity, new AbstractGenerateSqlHandler() {
 					@Override
                     public String generateSql(EntityMeta entityMeta, String[] forceUpdateField) {
 						return DialectExtUtils.generateInsertSql(dbType, entityMeta, entityMeta.getIdStrategy(),
 								NVL_FUNCTION, "NEXTVAL FOR " + entityMeta.getSequence(),
 								isAssignPKValue(entityMeta.getIdStrategy()), null);
 					}
-				}, new GenerateSavePKStrategy() {
+				}, new AbstractGenerateSavePKStrategy() {
 					@Override
                     public SavePKStrategy generate(EntityMeta entityMeta) {
 						return new SavePKStrategy(entityMeta.getIdStrategy(),
@@ -237,8 +237,8 @@ public class DefaultDialect implements Dialect {
 
 	@Override
 	public Long saveAll(SqlToyContext sqlToyContext, List<?> entities, int batchSize,
-			ReflectPropertyHandler reflectPropertyHandler, Connection conn, Integer dbType, String dialect,
-			Boolean autoCommit, String tableName) throws Exception {
+                        AbstractReflectPropertyHandler reflectPropertyHandler, Connection conn, Integer dbType, String dialect,
+                        Boolean autoCommit, String tableName) throws Exception {
 		EntityMeta entityMeta = sqlToyContext.getEntityMeta(entities.get(0).getClass());
 		boolean isAssignPK = isAssignPKValue(entityMeta.getIdStrategy());
 		String insertSql = DialectExtUtils.generateInsertSql(dbType, entityMeta, entityMeta.getIdStrategy(),
@@ -258,8 +258,8 @@ public class DefaultDialect implements Dialect {
 
 	@Override
 	public Long updateAll(SqlToyContext sqlToyContext, List<?> entities, int batchSize, String[] forceUpdateFields,
-			ReflectPropertyHandler reflectPropertyHandler, Connection conn, Integer dbType, String dialect,
-			Boolean autoCommit, String tableName) throws Exception {
+                          AbstractReflectPropertyHandler reflectPropertyHandler, Connection conn, Integer dbType, String dialect,
+                          Boolean autoCommit, String tableName) throws Exception {
 		return DialectUtils.updateAll(sqlToyContext, entities, batchSize, forceUpdateFields, reflectPropertyHandler,
 				NVL_FUNCTION, conn, dbType, autoCommit, tableName, false);
 	}
@@ -273,16 +273,16 @@ public class DefaultDialect implements Dialect {
 
 	@Override
 	public Long saveOrUpdateAll(SqlToyContext sqlToyContext, List<?> entities, int batchSize,
-			ReflectPropertyHandler reflectPropertyHandler, String[] forceUpdateFields, Connection conn, Integer dbType,
-			String dialect, Boolean autoCommit, String tableName) throws Exception {
+                                AbstractReflectPropertyHandler reflectPropertyHandler, String[] forceUpdateFields, Connection conn, Integer dbType,
+                                String dialect, Boolean autoCommit, String tableName) throws Exception {
 		// 不支持
 		throw new UnsupportedOperationException(SqlToyConstants.UN_SUPPORT_MESSAGE);
 	}
 
 	@Override
 	public Long saveAllIgnoreExist(SqlToyContext sqlToyContext, List<?> entities, int batchSize,
-			ReflectPropertyHandler reflectPropertyHandler, Connection conn, Integer dbType, String dialect,
-			Boolean autoCommit, String tableName) throws Exception {
+                                   AbstractReflectPropertyHandler reflectPropertyHandler, Connection conn, Integer dbType, String dialect,
+                                   Boolean autoCommit, String tableName) throws Exception {
 		EntityMeta entityMeta = sqlToyContext.getEntityMeta(entities.get(0).getClass());
 		boolean isAssignPK = isAssignPKValue(entityMeta.getIdStrategy());
 		String insertSql = DialectExtUtils

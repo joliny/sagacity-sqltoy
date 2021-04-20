@@ -11,7 +11,7 @@ import javax.sql.DataSource;
 
 import org.sagacity.sqltoy.SqlToyContext;
 import org.sagacity.sqltoy.callback.InsertRowCallbackHandler;
-import org.sagacity.sqltoy.callback.ReflectPropertyHandler;
+import org.sagacity.sqltoy.callback.AbstractReflectPropertyHandler;
 import org.sagacity.sqltoy.callback.UpdateRowHandler;
 import org.sagacity.sqltoy.config.model.EntityMeta;
 import org.sagacity.sqltoy.config.model.SqlToyConfig;
@@ -41,7 +41,7 @@ import org.sagacity.sqltoy.model.QueryResult;
 import org.sagacity.sqltoy.model.StoreResult;
 import org.sagacity.sqltoy.model.TreeTableModel;
 import org.sagacity.sqltoy.support.BaseDaoSupport;
-import org.sagacity.sqltoy.translate.TranslateHandler;
+import org.sagacity.sqltoy.translate.AbstractTranslateHandler;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -384,7 +384,7 @@ public class SqlToyLazyDaoImpl extends BaseDaoSupport implements SqlToyLazyDao {
 	 * org.sagacity.core.utils.callback.ReflectPropertyHandler)
 	 */
 	@Override
-	public <T extends Serializable> Long saveAll(List<T> entities, ReflectPropertyHandler reflectPropertyHandler) {
+	public <T extends Serializable> Long saveAll(List<T> entities, AbstractReflectPropertyHandler reflectPropertyHandler) {
 		return super.saveAll(entities, reflectPropertyHandler);
 	}
 
@@ -440,7 +440,7 @@ public class SqlToyLazyDaoImpl extends BaseDaoSupport implements SqlToyLazyDao {
 	 * java.lang.String[], org.sagacity.core.utils.callback.ReflectPropertyHandler)
 	 */
 	@Override
-	public <T extends Serializable> Long updateAll(List<T> entities, ReflectPropertyHandler reflectPropertyHandler,
+	public <T extends Serializable> Long updateAll(List<T> entities, AbstractReflectPropertyHandler reflectPropertyHandler,
 			String... forceUpdateProps) {
 		return super.updateAll(entities, reflectPropertyHandler, forceUpdateProps);
 	}
@@ -458,7 +458,7 @@ public class SqlToyLazyDaoImpl extends BaseDaoSupport implements SqlToyLazyDao {
 	 */
 	@Override
 	public <T extends Serializable> Long updateAllDeeply(List<T> entities,
-			ReflectPropertyHandler reflectPropertyHandler) {
+			AbstractReflectPropertyHandler reflectPropertyHandler) {
 		return super.updateAllDeeply(entities, reflectPropertyHandler);
 	}
 
@@ -492,7 +492,7 @@ public class SqlToyLazyDaoImpl extends BaseDaoSupport implements SqlToyLazyDao {
 	 */
 	@Override
 	public <T extends Serializable> Long saveOrUpdateAll(List<T> entities,
-			ReflectPropertyHandler reflectPropertyHandler, String... forceUpdateProps) {
+                                                         AbstractReflectPropertyHandler reflectPropertyHandler, String... forceUpdateProps) {
 		return super.saveOrUpdateAll(entities, reflectPropertyHandler, forceUpdateProps);
 	}
 
@@ -689,7 +689,7 @@ public class SqlToyLazyDaoImpl extends BaseDaoSupport implements SqlToyLazyDao {
 	 * org.sagacity.core.utils.callback.ReflectPropertyHandler)
 	 */
 	@Override
-	public Long executeSql(String sqlOrNamedSql, Serializable entity, ReflectPropertyHandler reflectPropertyHandler) {
+	public Long executeSql(String sqlOrNamedSql, Serializable entity, AbstractReflectPropertyHandler reflectPropertyHandler) {
 		return super.executeSql(sqlOrNamedSql, entity, reflectPropertyHandler);
 	}
 
@@ -895,7 +895,7 @@ public class SqlToyLazyDaoImpl extends BaseDaoSupport implements SqlToyLazyDao {
 	}
 
 	@Override
-	public void translate(Collection dataSet, String cacheName, TranslateHandler handler) {
+	public void translate(Collection dataSet, String cacheName, AbstractTranslateHandler handler) {
 		super.translate(dataSet, cacheName, null, 1, handler);
 	}
 
@@ -907,7 +907,7 @@ public class SqlToyLazyDaoImpl extends BaseDaoSupport implements SqlToyLazyDao {
 	 */
 	@Override
 	public void translate(Collection dataSet, String cacheName, String cacheType, Integer cacheNameIndex,
-			TranslateHandler handler) {
+			AbstractTranslateHandler handler) {
 		super.translate(dataSet, cacheName, cacheType, cacheNameIndex, handler);
 	}
 

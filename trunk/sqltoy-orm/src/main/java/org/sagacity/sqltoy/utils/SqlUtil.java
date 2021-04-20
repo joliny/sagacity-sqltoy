@@ -35,14 +35,14 @@ import java.util.regex.Pattern;
 import org.sagacity.sqltoy.SqlExecuteStat;
 import org.sagacity.sqltoy.SqlToyConstants;
 import org.sagacity.sqltoy.SqlToyContext;
-import org.sagacity.sqltoy.callback.CallableStatementResultHandler;
+import org.sagacity.sqltoy.callback.AbstractCallableStatementResultHandler;
 import org.sagacity.sqltoy.callback.InsertRowCallbackHandler;
-import org.sagacity.sqltoy.callback.PreparedStatementResultHandler;
-import org.sagacity.sqltoy.callback.RowCallbackHandler;
+import org.sagacity.sqltoy.callback.AbstractPreparedStatementResultHandler;
+import org.sagacity.sqltoy.callback.AbstractRowCallbackHandler;
 import org.sagacity.sqltoy.config.SqlConfigParseUtils;
 import org.sagacity.sqltoy.config.model.EntityMeta;
 import org.sagacity.sqltoy.model.TreeTableModel;
-import org.sagacity.sqltoy.plugins.TypeHandler;
+import org.sagacity.sqltoy.plugins.AbstractTypeHandler;
 import org.sagacity.sqltoy.utils.DataSourceUtils.DBType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -200,8 +200,8 @@ public class SqlUtil {
 	 * @throws SQLException
 	 * @throws IOException
 	 */
-	public static void setParamsValue(TypeHandler typeHandler, Connection conn, final Integer dbType,
-			PreparedStatement pst, Object[] params, Integer[] paramsType, int fromIndex)
+	public static void setParamsValue(AbstractTypeHandler typeHandler, Connection conn, final Integer dbType,
+                                      PreparedStatement pst, Object[] params, Integer[] paramsType, int fromIndex)
 			throws SQLException, IOException {
 		// fromIndex 针对存储过程调用存在从1开始,如:{?=call xxStore()}
 		// 一般情况fromIndex 都是0
@@ -233,8 +233,8 @@ public class SqlUtil {
 	 * @throws SQLException
 	 * @throws IOException
 	 */
-	private static void setSqlServerParamsValue(TypeHandler typeHandler, Connection conn, final Integer dbType,
-			PreparedStatement pst, Object[] params, Integer[] paramsType, int fromIndex)
+	private static void setSqlServerParamsValue(AbstractTypeHandler typeHandler, Connection conn, final Integer dbType,
+                                                PreparedStatement pst, Object[] params, Integer[] paramsType, int fromIndex)
 			throws SQLException, IOException {
 		// fromIndex 针对存储过程调用存在从1开始,如:{?=call xxStore()}
 		// 一般情况fromIndex 都是0
@@ -270,8 +270,8 @@ public class SqlUtil {
 	 * @throws SQLException
 	 * @throws IOException
 	 */
-	public static void setParamValue(TypeHandler typeHandler, Connection conn, final Integer dbType,
-			PreparedStatement pst, Object paramValue, int jdbcType, int paramIndex) throws SQLException, IOException {
+	public static void setParamValue(AbstractTypeHandler typeHandler, Connection conn, final Integer dbType,
+                                     PreparedStatement pst, Object paramValue, int jdbcType, int paramIndex) throws SQLException, IOException {
 		// jdbc部分数据库赋null值时必须要指定数据类型
 		if (null == paramValue) {
 			if (jdbcType != java.sql.Types.NULL) {
@@ -393,8 +393,8 @@ public class SqlUtil {
 	 * @return
 	 * @throws Exception
 	 */
-	private static List reflectResultToValueObject(TypeHandler typeHandler, ResultSet rs, Class voClass,
-			boolean ignoreAllEmptySet, HashMap<String, String> columnFieldMap) throws Exception {
+	private static List reflectResultToValueObject(AbstractTypeHandler typeHandler, ResultSet rs, Class voClass,
+                                                   boolean ignoreAllEmptySet, HashMap<String, String> columnFieldMap) throws Exception {
 		List resultList = new ArrayList();
 		// 提取数据预警阈值
 		int warnThresholds = SqlToyConstants.getWarnThresholds();
@@ -488,8 +488,8 @@ public class SqlUtil {
 	 * @return
 	 * @throws Exception
 	 */
-	private static Object reflectResultRowToVOClass(TypeHandler typeHandler, ResultSet rs, String[] columnLabels,
-			Method[] setMethods, String[] propTypes, Class[] genericTypes, Class voClass, boolean ignoreAllEmptySet)
+	private static Object reflectResultRowToVOClass(AbstractTypeHandler typeHandler, ResultSet rs, String[] columnLabels,
+                                                    Method[] setMethods, String[] propTypes, Class[] genericTypes, Class voClass, boolean ignoreAllEmptySet)
 			throws Exception {
 		// 根据匹配的字段通过java reflection将rs中的值映射到VO中
 		Object bean = voClass.getDeclaredConstructor().newInstance();
@@ -539,7 +539,7 @@ public class SqlUtil {
 	 * @return
 	 */
 	public static Object preparedStatementProcess(Object userData, PreparedStatement pst, ResultSet rs,
-			PreparedStatementResultHandler preparedStatementResultHandler) throws Exception {
+			AbstractPreparedStatementResultHandler preparedStatementResultHandler) throws Exception {
 		try {
 			preparedStatementResultHandler.execute(userData, pst, rs);
 		} catch (Exception se) {
@@ -571,7 +571,7 @@ public class SqlUtil {
 	 * @return
 	 */
 	public static Object callableStatementProcess(Object userData, CallableStatement pst, ResultSet rs,
-			CallableStatementResultHandler callableStatementResultHandler) throws Exception {
+			AbstractCallableStatementResultHandler callableStatementResultHandler) throws Exception {
 		try {
 			callableStatementResultHandler.execute(userData, pst, rs);
 		} catch (Exception se) {
@@ -666,9 +666,9 @@ public class SqlUtil {
 	 * @return
 	 * @throws Exception
 	 */
-	public static Object loadByJdbcQuery(TypeHandler typeHandler, final String queryStr, final Object[] params,
-			final Class voClass, final RowCallbackHandler rowCallbackHandler, final Connection conn,
-			final Integer dbType, final boolean ignoreAllEmptySet, final HashMap<String, String> colFieldMap)
+	public static Object loadByJdbcQuery(AbstractTypeHandler typeHandler, final String queryStr, final Object[] params,
+                                         final Class voClass, final AbstractRowCallbackHandler rowCallbackHandler, final Connection conn,
+                                         final Integer dbType, final boolean ignoreAllEmptySet, final HashMap<String, String> colFieldMap)
 			throws Exception {
 		List result = findByJdbcQuery(typeHandler, queryStr, params, voClass, rowCallbackHandler, conn, dbType,
 				ignoreAllEmptySet, colFieldMap);
@@ -695,14 +695,14 @@ public class SqlUtil {
 	 * @return
 	 * @throws Exception
 	 */
-	public static List findByJdbcQuery(TypeHandler typeHandler, final String queryStr, final Object[] params,
-			final Class voClass, final RowCallbackHandler rowCallbackHandler, final Connection conn,
-			final Integer dbType, final boolean ignoreAllEmptySet, final HashMap<String, String> colFieldMap)
+	public static List findByJdbcQuery(AbstractTypeHandler typeHandler, final String queryStr, final Object[] params,
+                                       final Class voClass, final AbstractRowCallbackHandler rowCallbackHandler, final Connection conn,
+                                       final Integer dbType, final boolean ignoreAllEmptySet, final HashMap<String, String> colFieldMap)
 			throws Exception {
 		ResultSet rs = null;
 		PreparedStatement pst = conn.prepareStatement(queryStr, ResultSet.TYPE_FORWARD_ONLY,
 				ResultSet.CONCUR_READ_ONLY);
-		List result = (List) preparedStatementProcess(null, pst, rs, new PreparedStatementResultHandler() {
+		List result = (List) preparedStatementProcess(null, pst, rs, new AbstractPreparedStatementResultHandler() {
 			@Override
             public void execute(Object obj, PreparedStatement pst, ResultSet rs) throws Exception {
 				setParamsValue(typeHandler, conn, dbType, pst, params, null, 0);
@@ -730,9 +730,9 @@ public class SqlUtil {
 	 * @return
 	 * @throws Exception
 	 */
-	public static List processResultSet(TypeHandler typeHandler, ResultSet rs, Class voClass,
-			RowCallbackHandler rowCallbackHandler, int startColIndex, boolean ignoreAllEmptySet,
-			final HashMap<String, String> colFieldMap) throws Exception {
+	public static List processResultSet(AbstractTypeHandler typeHandler, ResultSet rs, Class voClass,
+                                        AbstractRowCallbackHandler rowCallbackHandler, int startColIndex, boolean ignoreAllEmptySet,
+                                        final HashMap<String, String> colFieldMap) throws Exception {
 		// 记录行记数器
 		int index = 0;
 		// 提取数据预警阈值
@@ -825,9 +825,9 @@ public class SqlUtil {
 	 * @return
 	 * @throws Exception
 	 */
-	public static Long batchUpdateByJdbc(TypeHandler typeHandler, final String updateSql, final Collection rowDatas,
-			final int batchSize, final InsertRowCallbackHandler insertCallhandler, final Integer[] updateTypes,
-			final Boolean autoCommit, final Connection conn, final Integer dbType) throws Exception {
+	public static Long batchUpdateByJdbc(AbstractTypeHandler typeHandler, final String updateSql, final Collection rowDatas,
+                                         final int batchSize, final InsertRowCallbackHandler insertCallhandler, final Integer[] updateTypes,
+                                         final Boolean autoCommit, final Connection conn, final Integer dbType) throws Exception {
 		if (rowDatas == null || rowDatas.isEmpty()) {
 			logger.error("执行batchUpdateByJdbc 数据为空，sql={}", updateSql);
 			return 0L;
@@ -922,8 +922,8 @@ public class SqlUtil {
 	 * @return
 	 * @throws Exception
 	 */
-	public static boolean wrapTreeTableRoute(TypeHandler typeHandler, final TreeTableModel treeTableModel,
-			Connection conn, final Integer dbType) throws Exception {
+	public static boolean wrapTreeTableRoute(AbstractTypeHandler typeHandler, final TreeTableModel treeTableModel,
+                                             Connection conn, final Integer dbType) throws Exception {
 		if (StringUtil.isBlank(treeTableModel.getTableName()) || StringUtil.isBlank(treeTableModel.getIdField())
 				|| StringUtil.isBlank(treeTableModel.getPidField())) {
 			logger.error("请设置树形表的table名称、id字段名称、pid字段名称!");
@@ -1064,9 +1064,9 @@ public class SqlUtil {
 	 * @param dbType
 	 * @throws Exception
 	 */
-	private static void processNextLevel(TypeHandler typeHandler, final String updateLevelAndRoute,
-			final String nextNodeQueryStr, final TreeTableModel treeTableModel, final HashMap pidsMap, List ids,
-			final int nodeLevel, Connection conn, final int dbType) throws Exception {
+	private static void processNextLevel(AbstractTypeHandler typeHandler, final String updateLevelAndRoute,
+                                         final String nextNodeQueryStr, final TreeTableModel treeTableModel, final HashMap pidsMap, List ids,
+                                         final int nodeLevel, Connection conn, final int dbType) throws Exception {
 		// 修改节点level和节点路径
 		batchUpdateByJdbc(typeHandler, updateLevelAndRoute, ids, 500, new InsertRowCallbackHandler() {
 			@Override
@@ -1277,8 +1277,8 @@ public class SqlUtil {
 	 * @return
 	 * @throws Exception
 	 */
-	public static Long executeSql(TypeHandler typeHandler, final String executeSql, final Object[] params,
-			final Integer[] paramsType, final Connection conn, final Integer dbType, final Boolean autoCommit)
+	public static Long executeSql(AbstractTypeHandler typeHandler, final String executeSql, final Object[] params,
+                                  final Integer[] paramsType, final Connection conn, final Integer dbType, final Boolean autoCommit)
 			throws Exception {
 		SqlExecuteStat.showSql("execute sql=", executeSql, params);
 		boolean hasSetAutoCommit = false;
@@ -1290,7 +1290,7 @@ public class SqlUtil {
 			}
 		}
 		PreparedStatement pst = conn.prepareStatement(executeSql);
-		Object result = preparedStatementProcess(null, pst, null, new PreparedStatementResultHandler() {
+		Object result = preparedStatementProcess(null, pst, null, new AbstractPreparedStatementResultHandler() {
 			@Override
             public void execute(Object obj, PreparedStatement pst, ResultSet rs) throws SQLException, IOException {
 				// sqlserver 存在timestamp不能赋值问题,通过对象完成的修改、插入忽视掉timestamp列

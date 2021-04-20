@@ -10,7 +10,7 @@ import org.sagacity.sqltoy.translate.model.TranslateConfigModel;
  * @author zhongxuchen
  * @version v1.0,Date:2013-4-14
  */
-public abstract class TranslateCacheManager {
+public abstract class AbstractTranslateCacheManager {
 	protected HashMap<String, TranslateConfigModel> translateMap = new HashMap<String, TranslateConfigModel>();
 
 	/**

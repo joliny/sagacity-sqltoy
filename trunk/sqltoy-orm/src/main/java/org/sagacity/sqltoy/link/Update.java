@@ -10,7 +10,7 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.sagacity.sqltoy.SqlToyContext;
-import org.sagacity.sqltoy.callback.ReflectPropertyHandler;
+import org.sagacity.sqltoy.callback.AbstractReflectPropertyHandler;
 
 /**
  * @project sagacity-sqltoy
@@ -58,7 +58,7 @@ public class Update extends BaseLink {
 	 * 针对个别属性强制统一赋值
 	 */
 	@Deprecated
-	private ReflectPropertyHandler reflectPropertyHandler;
+	private AbstractReflectPropertyHandler reflectPropertyHandler;
 
 	/**
 	 * @param sqlToyContext
@@ -119,7 +119,7 @@ public class Update extends BaseLink {
 		return this;
 	}
 
-	public Update reflectHandler(ReflectPropertyHandler reflectPropertyHandler) {
+	public Update reflectHandler(AbstractReflectPropertyHandler reflectPropertyHandler) {
 		this.reflectPropertyHandler = reflectPropertyHandler;
 		return this;
 	}

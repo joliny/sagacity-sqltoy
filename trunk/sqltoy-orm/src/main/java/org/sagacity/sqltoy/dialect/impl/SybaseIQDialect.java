@@ -13,8 +13,8 @@ import java.util.List;
 import org.sagacity.sqltoy.SqlExecuteStat;
 import org.sagacity.sqltoy.SqlToyConstants;
 import org.sagacity.sqltoy.SqlToyContext;
-import org.sagacity.sqltoy.callback.ReflectPropertyHandler;
-import org.sagacity.sqltoy.callback.RowCallbackHandler;
+import org.sagacity.sqltoy.callback.AbstractReflectPropertyHandler;
+import org.sagacity.sqltoy.callback.AbstractRowCallbackHandler;
 import org.sagacity.sqltoy.callback.UpdateRowHandler;
 import org.sagacity.sqltoy.config.SqlConfigParseUtils;
 import org.sagacity.sqltoy.config.model.EntityMeta;
@@ -25,7 +25,7 @@ import org.sagacity.sqltoy.config.model.SqlType;
 import org.sagacity.sqltoy.config.model.SqlWithAnalysis;
 import org.sagacity.sqltoy.config.model.TableCascadeModel;
 import org.sagacity.sqltoy.dialect.Dialect;
-import org.sagacity.sqltoy.dialect.handler.GenerateSqlHandler;
+import org.sagacity.sqltoy.dialect.handler.AbstractGenerateSqlHandler;
 import org.sagacity.sqltoy.dialect.utils.DialectExtUtils;
 import org.sagacity.sqltoy.dialect.utils.DialectUtils;
 import org.sagacity.sqltoy.dialect.utils.SapIQDialectUtils;
@@ -279,7 +279,7 @@ public class SybaseIQDialect implements Dialect {
 	 */
 	@Override
     public QueryResult findBySql(final SqlToyContext sqlToyContext, final SqlToyConfig sqlToyConfig, final String sql,
-                                 final Object[] paramsValue, final RowCallbackHandler rowCallbackHandler, final Connection conn,
+                                 final Object[] paramsValue, final AbstractRowCallbackHandler rowCallbackHandler, final Connection conn,
                                  final LockMode lockMode, final Integer dbType, final String dialect, final int fetchSize, final int maxRows)
 			throws Exception {
 		if (null != lockMode) {
@@ -326,8 +326,8 @@ public class SybaseIQDialect implements Dialect {
 	 */
 	@Override
 	public Long saveOrUpdateAll(SqlToyContext sqlToyContext, List<?> entities, final int batchSize,
-			final ReflectPropertyHandler reflectPropertyHandler, final String[] forceUpdateFields, Connection conn,
-			final Integer dbType, final String dialect, final Boolean autoCommit, final String tableName)
+                                final AbstractReflectPropertyHandler reflectPropertyHandler, final String[] forceUpdateFields, Connection conn,
+                                final Integer dbType, final String dialect, final Boolean autoCommit, final String tableName)
 			throws Exception {
 		EntityMeta entityMeta = sqlToyContext.getEntityMeta(entities.get(0).getClass());
 		// sybase iq 只支持identity模式
@@ -340,7 +340,7 @@ public class SybaseIQDialect implements Dialect {
 					dbType, true);
 		}
 		Long updateCount = DialectUtils.saveOrUpdateAll(sqlToyContext, entities, batchSize, entityMeta,
-				forceUpdateFields, new GenerateSqlHandler() {
+				forceUpdateFields, new AbstractGenerateSqlHandler() {
 					@Override
                     public String generateSql(EntityMeta entityMeta, String[] forceUpdateFields) {
 						return DialectUtils.getSaveOrUpdateSql(dbType, entityMeta, entityMeta.getIdStrategy(),
@@ -365,8 +365,8 @@ public class SybaseIQDialect implements Dialect {
 	 */
 	@Override
 	public Long saveAllIgnoreExist(SqlToyContext sqlToyContext, List<?> entities, final int batchSize,
-			ReflectPropertyHandler reflectPropertyHandler, Connection conn, final Integer dbType, final String dialect,
-			final Boolean autoCommit, final String tableName) throws Exception {
+                                   AbstractReflectPropertyHandler reflectPropertyHandler, Connection conn, final Integer dbType, final String dialect,
+                                   final Boolean autoCommit, final String tableName) throws Exception {
 		EntityMeta entityMeta = sqlToyContext.getEntityMeta(entities.get(0).getClass());
 		// sybase iq 只支持identity模式
 		boolean isIdentity = (entityMeta.getIdStrategy() != null
@@ -378,7 +378,7 @@ public class SybaseIQDialect implements Dialect {
 					conn, dbType, true);
 		}
 		Long updateCount = DialectUtils.saveAllIgnoreExist(sqlToyContext, entities, batchSize, entityMeta,
-				new GenerateSqlHandler() {
+				new AbstractGenerateSqlHandler() {
 					@Override
                     public String generateSql(EntityMeta entityMeta, String[] forceUpdateFields) {
 						return DialectExtUtils.mergeIgnore(dbType, entityMeta, entityMeta.getIdStrategy(), null,
@@ -446,8 +446,8 @@ public class SybaseIQDialect implements Dialect {
 	 */
 	@Override
 	public Long saveAll(SqlToyContext sqlToyContext, List<?> entities, final int batchSize,
-			ReflectPropertyHandler reflectPropertyHandler, Connection conn, final Integer dbType, final String dialect,
-			final Boolean autoCommit, final String tableName) throws Exception {
+                        AbstractReflectPropertyHandler reflectPropertyHandler, Connection conn, final Integer dbType, final String dialect,
+                        final Boolean autoCommit, final String tableName) throws Exception {
 		return SapIQDialectUtils.saveAll(sqlToyContext, entities, batchSize, reflectPropertyHandler,
 				SqlToyConstants.sybaseIQIdentityOpen(), conn, dbType, tableName);
 	}
@@ -510,7 +510,7 @@ public class SybaseIQDialect implements Dialect {
 					logger.info("执行update主表:{} 对应级联子表: {} 更新操作!", tableName, subEntityMeta.getTableName());
 					saveOrUpdateAll(sqlToyContext, subTableData, sqlToyContext.getBatchSize(),
 							// 设置关联外键字段的属性值(来自主表的主键)
-							new ReflectPropertyHandler() {
+							new AbstractReflectPropertyHandler() {
 								@Override
                                 public void process() {
 									for (int i = 0; i < mappedFields.length; i++) {
@@ -535,8 +535,8 @@ public class SybaseIQDialect implements Dialect {
 	 */
 	@Override
 	public Long updateAll(SqlToyContext sqlToyContext, List<?> entities, final int batchSize,
-			final String[] forceUpdateFields, ReflectPropertyHandler reflectPropertyHandler, Connection conn,
-			final Integer dbType, final String dialect, final Boolean autoCommit, final String tableName)
+                          final String[] forceUpdateFields, AbstractReflectPropertyHandler reflectPropertyHandler, Connection conn,
+                          final Integer dbType, final String dialect, final Boolean autoCommit, final String tableName)
 			throws Exception {
 		return DialectUtils.updateAll(sqlToyContext, entities, batchSize, forceUpdateFields, reflectPropertyHandler,
 				NVL_FUNCTION, conn, dbType, autoCommit, tableName, false);

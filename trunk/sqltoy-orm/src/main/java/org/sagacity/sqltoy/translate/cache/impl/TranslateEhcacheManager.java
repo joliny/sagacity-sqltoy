@@ -11,7 +11,7 @@ import org.ehcache.config.builders.ExpiryPolicyBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
 import org.ehcache.config.units.EntryUnit;
 import org.ehcache.config.units.MemoryUnit;
-import org.sagacity.sqltoy.translate.cache.TranslateCacheManager;
+import org.sagacity.sqltoy.translate.cache.AbstractTranslateCacheManager;
 import org.sagacity.sqltoy.translate.model.TranslateConfigModel;
 import org.sagacity.sqltoy.utils.IdUtil;
 import org.sagacity.sqltoy.utils.StringUtil;
@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
  * @version v1.0,Date:2013-4-14
  */
 @SuppressWarnings("unchecked")
-public class TranslateEhcacheManager extends TranslateCacheManager {
+public class TranslateEhcacheManager extends AbstractTranslateCacheManager {
 	/**
 	 * 定义全局日志
 	 */

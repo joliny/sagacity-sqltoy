@@ -10,7 +10,7 @@ import java.util.Set;
 import org.sagacity.sqltoy.SqlToyContext;
 import org.sagacity.sqltoy.config.model.Translate;
 import org.sagacity.sqltoy.model.TranslateExtend;
-import org.sagacity.sqltoy.translate.cache.TranslateCacheManager;
+import org.sagacity.sqltoy.translate.cache.AbstractTranslateCacheManager;
 import org.sagacity.sqltoy.translate.cache.impl.TranslateEhcacheManager;
 import org.sagacity.sqltoy.translate.model.CheckerConfigModel;
 import org.sagacity.sqltoy.translate.model.DefaultConfig;
@@ -36,7 +36,7 @@ public class TranslateManager {
 	/**
 	 * 翻译缓存管理器，默认提供基于ehcache的实现，用户可以另行定义
 	 */
-	private TranslateCacheManager translateCacheManager;
+	private AbstractTranslateCacheManager translateCacheManager;
 
 	/**
 	 * 字符集
@@ -77,7 +77,7 @@ public class TranslateManager {
 		this.translateConfig = translateConfig;
 	}
 
-	public synchronized void initialize(SqlToyContext sqlToyContext, TranslateCacheManager cacheManager,
+	public synchronized void initialize(SqlToyContext sqlToyContext, AbstractTranslateCacheManager cacheManager,
 			int delayCheckCacheSeconds) throws Exception {
 		// 防止被多次调用
 		if (initialized) {
@@ -273,7 +273,7 @@ public class TranslateManager {
 	/**
 	 * @return the translateCacheManager
 	 */
-	public TranslateCacheManager getTranslateCacheManager() {
+	public AbstractTranslateCacheManager getTranslateCacheManager() {
 		return translateCacheManager;
 	}
 
