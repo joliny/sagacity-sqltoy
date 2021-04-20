@@ -149,7 +149,7 @@ public class FunctionUtils {
 					String[] ary = convert.split("\\,|\\;");
 					for (String tmp : ary) {
 						if (StringUtil.isNotBlank(tmp)) {
-							if (tmp.equals("default") || tmp.equals("defaults")) {
+							if ("default".equals(tmp) || "defaults".equals(tmp)) {
 								hasDefault = true;
 							} else if (!realConverts.contains(tmp)) {
 								realConverts.add(tmp);

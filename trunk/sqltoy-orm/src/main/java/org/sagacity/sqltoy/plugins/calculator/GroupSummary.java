@@ -85,8 +85,8 @@ public class GroupSummary {
 		Integer[] summaryCols = new Integer[sumColList.size()];
 		sumColList.toArray(summaryCols);
 		boolean hasAverage = false;
-		if (summaryModel.getGlobalAverageTitle() != null || summaryModel.getSumSite().equals("left")
-				|| summaryModel.getSumSite().equals("right")) {
+		if (summaryModel.getGlobalAverageTitle() != null || "left".equals(summaryModel.getSumSite())
+				|| "right".equals(summaryModel.getSumSite())) {
 			hasAverage = true;
 		}
 		Object[][] groupIndexs = null;

@@ -72,7 +72,7 @@ public class StringUtil {
 		if (null == str) {
 			return true;
 		}
-		if ((str instanceof CharSequence) && str.toString().trim().equals("")) {
+		if ((str instanceof CharSequence) && "".equals(str.toString().trim())) {
 			return true;
 		}
 		// 下面做了一些冗余性校验
@@ -274,9 +274,9 @@ public class StringUtil {
 	public static int getSymMarkIndex(String beginMarkSign, String endMarkSign, String source, int startIndex) {
 		Pattern pattern = null;
 		// 单引号和双引号，排除\' 和 \"
-		if (beginMarkSign.equals("'")) {
+		if ("'".equals(beginMarkSign)) {
 			pattern = quotaPattern;
-		} else if (beginMarkSign.equals("\"")) {
+		} else if ("\"".equals(beginMarkSign)) {
 			pattern = twoQuotaPattern;
 		}
 		// 判断对称符号是否相等
@@ -550,15 +550,15 @@ public class StringUtil {
 			return new String[] { source };
 		}
 		if (filterMap == null || filterMap.isEmpty()) {
-			if (splitSign.equals("?")) {
+			if ("?".equals(splitSign)) {
 				return source.split("\\?");
-			} else if (splitSign.equals(",")) {
+			} else if (",".equals(splitSign)) {
 				return source.split("\\,");
-			} else if (splitSign.equals(";")) {
+			} else if (";".equals(splitSign)) {
 				return source.split("\\;");
-			} else if (splitSign.equals(":")) {
+			} else if (":".equals(splitSign)) {
 				return source.split("\\:");
-			} else if (splitSign.trim().equals("")) {
+			} else if ("".equals(splitSign.trim())) {
 				return source.split("\\s+");
 			} else {
 				return source.split(splitSign);
@@ -566,15 +566,15 @@ public class StringUtil {
 		}
 		List<String[]> filters = matchFilters(source, filterMap);
 		if (filters.isEmpty()) {
-			if (splitSign.equals("?")) {
+			if ("?".equals(splitSign)) {
 				return source.split("\\?");
-			} else if (splitSign.equals(",")) {
+			} else if (",".equals(splitSign)) {
 				return source.split("\\,");
-			} else if (splitSign.equals(";")) {
+			} else if (";".equals(splitSign)) {
 				return source.split("\\;");
-			} else if (splitSign.equals(":")) {
+			} else if (":".equals(splitSign)) {
 				return source.split("\\:");
-			} else if (splitSign.trim().equals("")) {
+			} else if ("".equals(splitSign.trim())) {
 				return source.split("\\s+");
 			} else {
 				return source.split(splitSign);
@@ -633,9 +633,9 @@ public class StringUtil {
 	private static int[] getStartEndIndex(String source, String[] filter, int skipIndex, int splitIndex) {
 		int[] result = { -1, -1 };
 		Pattern pattern = null;
-		if (filter[0].equals("'")) {
+		if ("'".equals(filter[0])) {
 			pattern = quotaPattern;
-		} else if (filter[0].equals("\"")) {
+		} else if ("\"".equals(filter[0])) {
 			pattern = twoQuotaPattern;
 		}
 		String tmp;
@@ -648,7 +648,7 @@ public class StringUtil {
 			result[0] = matchIndex(source, pattern, skipIndex)[0];
 			if (result[0] >= 0) {
 				tmp = source.substring(result[0], result[0] + 1);
-				if (!tmp.equals("'") && !tmp.equals("\"")) {
+				if (!"'".equals(tmp) && !"\"".equals(tmp)) {
 					result[0] = result[0] + 1;
 				}
 				result[1] = getSymMarkIndex(filter[0], filter[1], source, result[0]);
@@ -665,7 +665,7 @@ public class StringUtil {
 				}
 			} else {
 				tmp = source.substring(result[1], result[1] + 1);
-				if (!tmp.equals("'") && !tmp.equals("\"")) {
+				if (!"'".equals(tmp) && !"\"".equals(tmp)) {
 					result[0] = matchIndex(source, pattern, result[1] + 2)[0];
 				} else {
 					result[0] = matchIndex(source, pattern, result[1] + 1)[0];
@@ -673,7 +673,7 @@ public class StringUtil {
 				// 正则表达式有一个转义符号占一位
 				if (result[0] > 0) {
 					tmp = source.substring(result[0], result[0] + 1);
-					if (!tmp.equals("'") && !tmp.equals("\"")) {
+					if (!"'".equals(tmp) && !"\"".equals(tmp)) {
 						result[0] = result[0] + 1;
 					}
 					result[1] = getSymMarkIndex(filter[0], filter[1], source, result[0]);
@@ -706,9 +706,9 @@ public class StringUtil {
 			beginSign = (String) entry.getKey();
 			endSign = (String) entry.getValue();
 			pattern = null;
-			if (beginSign.equals("'")) {
+			if ("'".equals(beginSign)) {
 				pattern = quotaPattern;
-			} else if (beginSign.equals("\"")) {
+			} else if ("\"".equals(beginSign)) {
 				pattern = twoQuotaPattern;
 			}
 			endSignIndex = -1;

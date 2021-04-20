@@ -660,9 +660,9 @@ public class SqlToyContext implements ApplicationContextAware {
 			FunctionUtils.setFunctionConverts((List<String>) functionConverts);
 		} else if (functionConverts instanceof String) {
 			String converts = (String) functionConverts;
-			if (StringUtil.isBlank(converts) || converts.equals("default") || converts.equals("defaults")) {
+			if (StringUtil.isBlank(converts) || "default".equals(converts) || "defaults".equals(converts)) {
 				FunctionUtils.setFunctionConverts(null);
-			} else if (!converts.equalsIgnoreCase("close")) {
+			} else if (!"close".equalsIgnoreCase(converts)) {
 				FunctionUtils.setFunctionConverts(Arrays.asList(converts.split("\\,")));
 			}
 		}

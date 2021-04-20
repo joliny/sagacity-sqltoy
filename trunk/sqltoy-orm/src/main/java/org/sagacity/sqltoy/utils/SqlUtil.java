@@ -1076,7 +1076,7 @@ public class SqlUtil {
 				String pid = ((List) rowData).get(2).toString();
 				String nodeRoute = (String) pidsMap.get(pid);
 				int size = treeTableModel.getIdLength();
-				if (nodeRoute == null || nodeRoute.trim().equals("")) {
+				if (nodeRoute == null || "".equals(nodeRoute.trim())) {
 					nodeRoute = "";
 					if (!treeTableModel.isChar() || treeTableModel.isAppendZero()) {
 						// 负数
@@ -1327,31 +1327,31 @@ public class SqlUtil {
 			return idValue;
 		}
 		// 按照优先顺序对比
-		if (idType.equals("java.lang.string")) {
+		if ("java.lang.string".equals(idType)) {
 			return idValue.toString();
 		}
-		if (idType.equals("java.lang.integer")) {
+		if ("java.lang.integer".equals(idType)) {
 			return Integer.valueOf(idValue.toString());
 		}
-		if (idType.equals("java.lang.long")) {
+		if ("java.lang.long".equals(idType)) {
 			return Long.valueOf(idValue.toString());
 		}
-		if (idType.equals("java.math.biginteger")) {
+		if ("java.math.biginteger".equals(idType)) {
 			return new BigInteger(idValue.toString());
 		}
-		if (idType.equals("java.math.bigdecimal")) {
+		if ("java.math.bigdecimal".equals(idType)) {
 			return new BigDecimal(idValue.toString());
 		}
-		if (idType.equals("long")) {
+		if ("long".equals(idType)) {
 			return Long.valueOf(idValue.toString()).longValue();
 		}
-		if (idType.equals("int")) {
+		if ("int".equals(idType)) {
 			return Integer.valueOf(idValue.toString()).intValue();
 		}
-		if (idType.equals("java.lang.short")) {
+		if ("java.lang.short".equals(idType)) {
 			return Short.valueOf(idValue.toString());
 		}
-		if (idType.equals("short")) {
+		if ("short".equals(idType)) {
 			return Short.valueOf(idValue.toString()).shortValue();
 		}
 		return idValue;
@@ -1458,7 +1458,7 @@ public class SqlUtil {
 					}
 					varSql = preSql.trim();
 					// 首位字符不是数字(48~57)、(A-Z|a-z)字母(65~90,97~122)、下划线(95)、冒号(58)
-					if (!varSql.equals("")) {
+					if (!"".equals(varSql)) {
 						preChar = varSql.charAt(varSql.length() - 1);
 					} else {
 						preChar = ' ';

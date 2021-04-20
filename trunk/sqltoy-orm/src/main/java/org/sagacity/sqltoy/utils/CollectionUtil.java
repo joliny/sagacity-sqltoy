@@ -812,7 +812,7 @@ public class CollectionUtil {
 					groupSumMap.put((Integer) groupIndexs[j][0], new Object[columns]);
 					// 同时存在汇总和平均
 					if (groupIndexs[j][1] != null && groupIndexs[j][2] != null
-							&& (groupIndexs[j][3].equals("top") || groupIndexs[j][3].equals("bottom"))) {
+							&& ("top".equals(groupIndexs[j][3]) || "bottom".equals(groupIndexs[j][3]))) {
 						i = i + 2;
 					}
 					// (必须要有一个汇总或平均)
@@ -980,7 +980,7 @@ public class CollectionUtil {
 			titleIndex = (Integer) title[4];
 		}
 		// 汇总
-		if (title[1] != null || (title[3].equals("left") || title[3].equals("right"))) {
+		if (title[1] != null || ("left".equals(title[3]) || "right".equals(title[3]))) {
 			summary = new ArrayList();
 			// 汇总数据加入新的数据行中
 			for (int i = 0, n = rowSummaryData.length; i < n; i++) {
@@ -992,12 +992,12 @@ public class CollectionUtil {
 			}
 
 			// 设置标题
-			if (title[1] != null && !title[1].toString().trim().equals("")) {
+			if (title[1] != null && !"".equals(title[1].toString().trim())) {
 				summary.set(titleIndex, title[1]);
 			}
 		}
 		// 平均
-		if (title[2] != null || (title[3].equals("left") || title[3].equals("right"))) {
+		if (title[2] != null || ("left".equals(title[3]) || "right".equals(title[3]))) {
 			average = new ArrayList();
 			// 平均数据加入新的数据行中
 			Double averageValue;
@@ -1019,7 +1019,7 @@ public class CollectionUtil {
 			}
 
 			// 设置标题
-			if (title[2] != null && !title[2].toString().trim().equals("")) {
+			if (title[2] != null && !"".equals(title[2].toString().trim())) {
 				average.set(titleIndex, title[2]);
 			}
 		}
@@ -1032,17 +1032,17 @@ public class CollectionUtil {
 				result.add(average);
 			}
 		} else {
-			if (title[3].equals("top") || title[3].equals("bottom")) {
+			if ("top".equals(title[3]) || "bottom".equals(title[3])) {
 				result.add(summary);
 				// 平均数据优先显示
-				if (title[3].equals("bottom")) {
+				if ("bottom".equals(title[3])) {
 					result.add(0, average);
 				} else {
 					result.add(average);
 				}
 			} else {
 				// 汇总数据是否左边显示
-				boolean isLeft = title[3].equals("left");
+				boolean isLeft = "left".equals(title[3]);
 				String sumCellValue;
 				String averageValue;
 				String linkSign = " / ";
@@ -1186,44 +1186,44 @@ public class CollectionUtil {
 		}
 		String type = argType.toLowerCase();
 		Object[] result = null;
-		if (type.equals("string")) {
+		if ("string".equals(type)) {
 			result = new String[values.length];
-		} else if (type.equals("int") || type.equals("integer")) {
+		} else if ("int".equals(type) || "integer".equals(type)) {
 			result = new Integer[values.length];
-		} else if (type.equals("long")) {
+		} else if ("long".equals(type)) {
 			result = new Long[values.length];
-		} else if (type.equals("date")) {
+		} else if ("date".equals(type)) {
 			result = new Date[values.length];
-		} else if (type.equals("boolean")) {
+		} else if ("boolean".equals(type)) {
 			result = new Boolean[values.length];
-		} else if (type.equals("double")) {
+		} else if ("double".equals(type)) {
 			result = new Double[values.length];
-		} else if (type.equals("float")) {
+		} else if ("float".equals(type)) {
 			result = new Float[values.length];
-		} else if (type.equals("short")) {
+		} else if ("short".equals(type)) {
 			result = new Short[values.length];
-		} else if (type.equals("java.lang.class") || type.equals("class")) {
+		} else if ("java.lang.class".equals(type) || "class".equals(type)) {
 			result = new Class[values.length];
 		}
 		for (int i = 0; i < result.length; i++) {
 			if (values[i] != null) {
-				if (type.equals("string")) {
+				if ("string".equals(type)) {
 					result[i] = values[i];
-				} else if (type.equals("int") || type.equals("integer")) {
+				} else if ("int".equals(type) || "integer".equals(type)) {
 					result[i] = Integer.valueOf(values[i]);
-				} else if (type.equals("long")) {
+				} else if ("long".equals(type)) {
 					result[i] = Long.valueOf(values[i]);
-				} else if (type.equals("date")) {
+				} else if ("date".equals(type)) {
 					result[i] = DateUtil.parseString(values[i]);
-				} else if (type.equals("boolean")) {
+				} else if ("boolean".equals(type)) {
 					result[i] = Boolean.parseBoolean(values[i]);
-				} else if (type.equals("double")) {
+				} else if ("double".equals(type)) {
 					result[i] = Double.valueOf(values[i]);
-				} else if (type.equals("float")) {
+				} else if ("float".equals(type)) {
 					result[i] = Float.valueOf(values[i]);
-				} else if (type.equals("short")) {
+				} else if ("short".equals(type)) {
 					result[i] = Short.valueOf(values[i]);
-				} else if (type.equals("java.lang.class") || type.equals("class")) {
+				} else if ("java.lang.class".equals(type) || "class".equals(type)) {
 					try {
 						result[i] = Class.forName(values[i]);
 					} catch (ClassNotFoundException e) {

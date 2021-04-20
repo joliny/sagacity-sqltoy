@@ -744,14 +744,14 @@ public class FileUtil {
 		if (StringUtil.isNotBlank(lowPath)) {
 			secondPath = lowPath;
 		}
-		if (firstPath.concat(secondPath).trim().equals("")) {
+		if ("".equals(firstPath.concat(secondPath).trim())) {
 			return "";
 		}
 		String separator = File.separator;
 
-		if (!firstPath.equals("")) {
-			if (firstPath.substring(firstPath.length() - 1).equals("/")
-					|| firstPath.substring(firstPath.length() - 1).equals("\\")) {
+		if (!"".equals(firstPath)) {
+			if ("/".equals(firstPath.substring(firstPath.length() - 1))
+					|| "\\".equals(firstPath.substring(firstPath.length() - 1))) {
 				firstPath = firstPath.substring(0, firstPath.length() - 1) + separator;
 			} else {
 				firstPath += separator;
@@ -759,8 +759,8 @@ public class FileUtil {
 		} else {
 			firstPath += separator;
 		}
-		if (!secondPath.equals("")
-				&& (secondPath.substring(0, 1).equals("/") || secondPath.substring(0, 1).equals("\\"))) {
+		if (!"".equals(secondPath)
+				&& ("/".equals(secondPath.substring(0, 1)) || "\\".equals(secondPath.substring(0, 1)))) {
 			secondPath = secondPath.substring(1);
 		}
 		return firstPath.concat(secondPath);
@@ -794,7 +794,7 @@ public class FileUtil {
 				realPath = realPath.substring(1);
 			}
 			URL url = Thread.currentThread().getContextClassLoader().getResource(realPath);
-			if (url != null && url.getProtocol().equals("file")) {
+			if (url != null && "file".equals(url.getProtocol())) {
 				try {
 					result = new File(url.toURI());
 				} catch (URISyntaxException e) {

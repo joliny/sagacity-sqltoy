@@ -80,7 +80,7 @@ public class NumberUtil {
 		}
 		try {
 			String tmpStr = target.toString().replace(",", "").trim().toLowerCase();
-			if (tmpStr.equals("") || tmpStr.equals("null") || tmpStr.equals("nan")) {
+			if ("".equals(tmpStr) || "null".equals(tmpStr) || "nan".equals(tmpStr)) {
 				return "";
 			}
 			BigDecimal tmp = new BigDecimal(tmpStr);
@@ -123,7 +123,7 @@ public class NumberUtil {
 		}
 		try {
 			String tmpStr = target.toString().replace(",", "").trim().toLowerCase();
-			if (tmpStr.equals("") || tmpStr.equals("null") || tmpStr.equals("nan")) {
+			if ("".equals(tmpStr) || "null".equals(tmpStr) || "nan".equals(tmpStr)) {
 				return "";
 			}
 			String lowPattern = pattern.toLowerCase();
@@ -273,7 +273,7 @@ public class NumberUtil {
 		if (result.startsWith("壹拾")) {
 			result = result.substring(1);
 		}
-		if (!result.equals("")) {
+		if (!"".equals(result)) {
 			result += "元";
 		}
 
@@ -283,7 +283,7 @@ public class NumberUtil {
 		}
 
 		// 没有小数
-		if (dotIndex == -1 || (decimalPartStr.equals("") || Integer.parseInt(decimalPartStr) == 0)) {
+		if (dotIndex == -1 || ("".equals(decimalPartStr) || Integer.parseInt(decimalPartStr) == 0)) {
 			result += "整";
 		} else {
 			String[] uomName = { "角", "分", "厘" };
@@ -425,7 +425,7 @@ public class NumberUtil {
 	 * @return
 	 */
 	private static BigDecimal parseMillMoney(String capitalMoneyStr) {
-		if (capitalMoneyStr.equals("") || capitalMoneyStr.equals("0")) {
+		if ("".equals(capitalMoneyStr) || "0".equals(capitalMoneyStr)) {
 			return BigDecimal.ZERO;
 		}
 		String millStr = "0";
@@ -446,7 +446,7 @@ public class NumberUtil {
 	 * @return String
 	 */
 	private static String numberToChina(String sourceInt, boolean isMoney) {
-		if (sourceInt.equals("0")) {
+		if ("0".equals(sourceInt)) {
 			return "";
 		}
 		String[] chinaNum = (isMoney ? capitalMoneyNumber : captialNumber);
@@ -482,7 +482,7 @@ public class NumberUtil {
 	 * @return
 	 */
 	private static BigDecimal parseLowThousandMoney(String capitalMoneyStr) {
-		if (capitalMoneyStr.equals("0")) {
+		if ("0".equals(capitalMoneyStr)) {
 			return BigDecimal.ZERO;
 		}
 		String lastStr = capitalMoneyStr.substring(capitalMoneyStr.length() - 1);

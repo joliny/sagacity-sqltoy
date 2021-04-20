@@ -284,45 +284,45 @@ public class BeanUtil {
 						&& (methodName.equals("get".concat(property)) || methodName.equals("is".concat(property))
 								|| (methodName.startsWith("is") && methodName.equals(property)))) {
 					typeName = method.getReturnType().getSimpleName().toLowerCase();
-					if (typeName.equals("string")) {
+					if ("string".equals(typeName)) {
 						fieldsType[i] = java.sql.Types.VARCHAR;
-					} else if (typeName.equals("integer")) {
+					} else if ("integer".equals(typeName)) {
 						fieldsType[i] = java.sql.Types.INTEGER;
-					} else if (typeName.equals("bigdecimal")) {
+					} else if ("bigdecimal".equals(typeName)) {
 						fieldsType[i] = java.sql.Types.DECIMAL;
-					} else if (typeName.equals("date")) {
+					} else if ("date".equals(typeName)) {
 						fieldsType[i] = java.sql.Types.DATE;
-					} else if (typeName.equals("timestamp")) {
+					} else if ("timestamp".equals(typeName)) {
 						fieldsType[i] = java.sql.Types.TIMESTAMP;
-					} else if (typeName.equals("int")) {
+					} else if ("int".equals(typeName)) {
 						fieldsType[i] = java.sql.Types.INTEGER;
-					} else if (typeName.equals("long")) {
+					} else if ("long".equals(typeName)) {
 						fieldsType[i] = java.sql.Types.NUMERIC;
-					} else if (typeName.equals("double")) {
+					} else if ("double".equals(typeName)) {
 						fieldsType[i] = java.sql.Types.DOUBLE;
-					} else if (typeName.equals("clob")) {
+					} else if ("clob".equals(typeName)) {
 						fieldsType[i] = java.sql.Types.CLOB;
-					} else if (typeName.equals("biginteger")) {
+					} else if ("biginteger".equals(typeName)) {
 						fieldsType[i] = java.sql.Types.BIGINT;
-					} else if (typeName.equals("blob")) {
+					} else if ("blob".equals(typeName)) {
 						fieldsType[i] = java.sql.Types.BLOB;
-					} else if (typeName.equals("byte[]")) {
+					} else if ("byte[]".equals(typeName)) {
 						fieldsType[i] = java.sql.Types.BINARY;
-					} else if (typeName.equals("boolean")) {
+					} else if ("boolean".equals(typeName)) {
 						fieldsType[i] = java.sql.Types.BOOLEAN;
-					} else if (typeName.equals("char")) {
+					} else if ("char".equals(typeName)) {
 						fieldsType[i] = java.sql.Types.CHAR;
-					} else if (typeName.equals("number")) {
+					} else if ("number".equals(typeName)) {
 						fieldsType[i] = java.sql.Types.NUMERIC;
-					} else if (typeName.equals("short")) {
+					} else if ("short".equals(typeName)) {
 						fieldsType[i] = java.sql.Types.NUMERIC;
-					} else if (typeName.equals("float")) {
+					} else if ("float".equals(typeName)) {
 						fieldsType[i] = java.sql.Types.FLOAT;
-					} else if (typeName.equals("datetime")) {
+					} else if ("datetime".equals(typeName)) {
 						fieldsType[i] = java.sql.Types.DATE;
-					} else if (typeName.equals("time")) {
+					} else if ("time".equals(typeName)) {
 						fieldsType[i] = java.sql.Types.TIME;
-					} else if (typeName.equals("byte")) {
+					} else if ("byte".equals(typeName)) {
 						fieldsType[i] = java.sql.Types.TINYINT;
 					} else if (typeName.endsWith("[]")) {
 						fieldsType[i] = java.sql.Types.ARRAY;
@@ -448,11 +448,11 @@ public class BeanUtil {
 			paramValue = CollectionUtil.convertArray(paramValue)[0];
 		}
 		if (paramValue == null) {
-			if (typeName.equals("int") || typeName.equals("long") || typeName.equals("double")
-					|| typeName.equals("float") || typeName.equals("short")) {
+			if ("int".equals(typeName) || "long".equals(typeName) || "double".equals(typeName)
+					|| "float".equals(typeName) || "short".equals(typeName)) {
 				return 0;
 			}
-			if (typeName.equals("boolean") || typeName.equals("java.lang.boolean")) {
+			if ("boolean".equals(typeName) || "java.lang.boolean".equals(typeName)) {
 				return false;
 			}
 			return null;
@@ -470,7 +470,7 @@ public class BeanUtil {
 		}
 		String valueStr = paramValue.toString();
 		// 字符串第一优先
-		if (typeName.equals("string") || typeName.equals("java.lang.string")) {
+		if ("string".equals(typeName) || "java.lang.string".equals(typeName)) {
 			if (paramValue instanceof java.sql.Clob) {
 				java.sql.Clob clob = (java.sql.Clob) paramValue;
 				return clob.getSubString((long) 1, (int) clob.length());
@@ -481,64 +481,64 @@ public class BeanUtil {
 			return valueStr;
 		}
 		// 第二优先
-		if (typeName.equals("java.math.bigdecimal") || typeName.equals("decimal") || typeName.equals("bigdecimal")) {
+		if ("java.math.bigdecimal".equals(typeName) || "decimal".equals(typeName) || "bigdecimal".equals(typeName)) {
 			return new BigDecimal(convertBoolean(valueStr));
 		}
 		// 第三优先
-		if (typeName.equals("java.time.localdatetime")) {
+		if ("java.time.localdatetime".equals(typeName)) {
 			if (paramValue instanceof LocalDateTime) {
 				return (LocalDateTime) paramValue;
 			}
 			return DateUtil.asLocalDateTime(DateUtil.convertDateObject(paramValue));
 		}
 		// 第四
-		if (typeName.equals("java.time.localdate")) {
+		if ("java.time.localdate".equals(typeName)) {
 			if (paramValue instanceof LocalDate) {
 				return (LocalDate) paramValue;
 			}
 			return DateUtil.asLocalDate(DateUtil.convertDateObject(paramValue));
 		}
 		// 第五
-		if (typeName.equals("java.lang.integer") || typeName.equals("integer")) {
+		if ("java.lang.integer".equals(typeName) || "integer".equals(typeName)) {
 			return Integer.valueOf(convertBoolean(valueStr).split("\\.")[0]);
 		}
 		// 第六
-		if (typeName.equals("java.sql.timestamp") || typeName.equals("timestamp")) {
+		if ("java.sql.timestamp".equals(typeName) || "timestamp".equals(typeName)) {
 			if (paramValue instanceof java.sql.Timestamp) {
 				return (java.sql.Timestamp) paramValue;
 			}
 			if (paramValue instanceof java.util.Date) {
 				return new Timestamp(((java.util.Date) paramValue).getTime());
 			}
-			if (paramValue.getClass().getTypeName().toLowerCase().equals("oracle.sql.timestamp")) {
+			if ("oracle.sql.timestamp".equals(paramValue.getClass().getTypeName().toLowerCase())) {
 				return oracleTimeStampConvert(paramValue);
 			}
 			return new Timestamp(DateUtil.parseString(valueStr).getTime());
 		}
-		if (typeName.equals("java.lang.double")) {
+		if ("java.lang.double".equals(typeName)) {
 			return Double.valueOf(valueStr);
 		}
-		if (typeName.equals("java.util.date") || typeName.equals("date")) {
+		if ("java.util.date".equals(typeName) || "date".equals(typeName)) {
 			if (paramValue instanceof java.util.Date) {
 				return (java.util.Date) paramValue;
 			}
 			if (paramValue instanceof Number) {
 				return new java.util.Date(((Number) paramValue).longValue());
 			}
-			if (paramValue.getClass().getTypeName().toLowerCase().equals("oracle.sql.timestamp")) {
+			if ("oracle.sql.timestamp".equals(paramValue.getClass().getTypeName().toLowerCase())) {
 				return new java.util.Date(oracleDateConvert(paramValue).getTime());
 			}
 			return DateUtil.parseString(valueStr);
 		}
-		if (typeName.equals("java.lang.long")) {
+		if ("java.lang.long".equals(typeName)) {
 			// 考虑数据库中存在默认值为0.00 的问题，导致new Long() 报错
 			return Long.valueOf(convertBoolean(valueStr).split("\\.")[0]);
 		}
-		if (typeName.equals("int")) {
+		if ("int".equals(typeName)) {
 			return Double.valueOf(convertBoolean(valueStr)).intValue();
 		}
 		// clob 类型比较特殊,对外转类型全部转为字符串
-		if (typeName.equals("java.sql.clob") || typeName.equals("clob")) {
+		if ("java.sql.clob".equals(typeName) || "clob".equals(typeName)) {
 			// update 2020-6-23 增加兼容性判断
 			if (paramValue instanceof String) {
 				return valueStr;
@@ -552,31 +552,31 @@ public class BeanUtil {
 			}
 			return out.toString();
 		}
-		if (typeName.equals("java.time.localtime")) {
+		if ("java.time.localtime".equals(typeName)) {
 			if (paramValue instanceof LocalTime) {
 				return (LocalTime) paramValue;
 			}
 			return DateUtil.asLocalTime(DateUtil.convertDateObject(paramValue));
 		}
 		// add 2020-4-9
-		if (typeName.equals("java.math.biginteger") || typeName.equals("biginteger")) {
+		if ("java.math.biginteger".equals(typeName) || "biginteger".equals(typeName)) {
 			return new BigInteger(convertBoolean(valueStr).split("\\.")[0]);
 		}
-		if (typeName.equals("long")) {
+		if ("long".equals(typeName)) {
 			return Double.valueOf(convertBoolean(valueStr)).longValue();
 		}
-		if (typeName.equals("double")) {
+		if ("double".equals(typeName)) {
 			return Double.valueOf(valueStr).doubleValue();
 		}
 		// update by 2020-4-13增加Byte类型的处理
-		if (typeName.equals("java.lang.byte")) {
+		if ("java.lang.byte".equals(typeName)) {
 			return Byte.valueOf(valueStr);
 		}
-		if (typeName.equals("byte")) {
+		if ("byte".equals(typeName)) {
 			return Byte.valueOf(valueStr).byteValue();
 		}
 		// byte数组
-		if (typeName.equals("byte[]") || typeName.equals("[b")) {
+		if ("byte[]".equals(typeName) || "[b".equals(typeName)) {
 			if (paramValue instanceof byte[]) {
 				return (byte[]) paramValue;
 			}
@@ -588,25 +588,25 @@ public class BeanUtil {
 			return valueStr.getBytes();
 		}
 		// 字符串转 boolean 型
-		if (typeName.equals("java.lang.boolean") || typeName.equals("boolean")) {
-			if (valueStr.toLowerCase().equals("true") || valueStr.equals("1")) {
+		if ("java.lang.boolean".equals(typeName) || "boolean".equals(typeName)) {
+			if ("true".equals(valueStr.toLowerCase()) || "1".equals(valueStr)) {
 				return Boolean.TRUE;
 			}
 			return Boolean.FALSE;
 		}
-		if (typeName.equals("java.lang.short")) {
+		if ("java.lang.short".equals(typeName)) {
 			return Short.valueOf(Double.valueOf(convertBoolean(valueStr)).shortValue());
 		}
-		if (typeName.equals("short")) {
+		if ("short".equals(typeName)) {
 			return Double.valueOf(convertBoolean(valueStr)).shortValue();
 		}
-		if (typeName.equals("java.lang.float")) {
+		if ("java.lang.float".equals(typeName)) {
 			return Float.valueOf(valueStr);
 		}
-		if (typeName.equals("float")) {
+		if ("float".equals(typeName)) {
 			return Float.valueOf(valueStr).floatValue();
 		}
-		if (typeName.equals("java.sql.date")) {
+		if ("java.sql.date".equals(typeName)) {
 			if (paramValue instanceof java.sql.Date) {
 				return (java.sql.Date) paramValue;
 			}
@@ -614,15 +614,15 @@ public class BeanUtil {
 				return new java.sql.Date(((java.util.Date) paramValue).getTime());
 			}
 
-			if (paramValue.getClass().getTypeName().toLowerCase().equals("oracle.sql.timestamp")) {
+			if ("oracle.sql.timestamp".equals(paramValue.getClass().getTypeName().toLowerCase())) {
 				return new java.sql.Date(oracleDateConvert(paramValue).getTime());
 			}
 			return new java.sql.Date(DateUtil.parseString(valueStr).getTime());
 		}
-		if (typeName.equals("char")) {
+		if ("char".equals(typeName)) {
 			return valueStr.charAt(0);
 		}
-		if (typeName.equals("java.sql.time") || typeName.equals("time")) {
+		if ("java.sql.time".equals(typeName) || "time".equals(typeName)) {
 			if (paramValue instanceof java.sql.Time) {
 				return (java.sql.Time) paramValue;
 			}
@@ -630,13 +630,13 @@ public class BeanUtil {
 				return new java.sql.Time(((java.util.Date) paramValue).getTime());
 			}
 
-			if (paramValue.getClass().getTypeName().toLowerCase().equals("oracle.sql.timestamp")) {
+			if ("oracle.sql.timestamp".equals(paramValue.getClass().getTypeName().toLowerCase())) {
 				return new java.sql.Time(oracleDateConvert(paramValue).getTime());
 			}
 			return DateUtil.parseString(valueStr);
 		}
 		// 字符数组
-		if (typeName.equals("char[]") || typeName.equals("[c")) {
+		if ("char[]".equals(typeName) || "[c".equals(typeName)) {
 			if (paramValue instanceof char[]) {
 				return (char[]) paramValue;
 			}
@@ -660,10 +660,10 @@ public class BeanUtil {
 	}
 
 	private static String convertBoolean(String var) {
-		if (var.equals("true")) {
+		if ("true".equals(var)) {
 			return "1";
 		}
-		if (var.equals("false")) {
+		if ("false".equals(var)) {
 			return "0";
 		}
 		return var;
@@ -1282,7 +1282,7 @@ public class BeanUtil {
 			if (isGet) {
 				if ((methodName.startsWith("get") || methodName.startsWith("is"))
 						&& !void.class.equals(method.getReturnType()) && method.getParameterTypes().length == 0
-						&& !methodName.toLowerCase().equals("getclass")) {
+						&& !"getclass".equals(methodName.toLowerCase())) {
 					methodAry.add(StringUtil.firstToLowerCase(methodName.replaceFirst("get|is", "")));
 				}
 			} else {

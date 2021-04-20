@@ -90,7 +90,7 @@ public class TranslateConfigParse {
 							XMLUtil.setAttributes(elt, translateCacheModel);
 							translateCacheModel.setType(translateType);
 							//非sqlId模式定义
-							if (translateType.equals("sql")) {
+							if ("sql".equals(translateType)) {
 								if (StringUtil.isBlank(translateCacheModel.getSql())) {
 									sqlNode = elt.getElementsByTagName("sql");
 									if (sqlNode.getLength() > 0) {
@@ -112,7 +112,7 @@ public class TranslateConfigParse {
 							}
 							// local模式缓存 默认缓存不失效，表示缓存由开发者在应用程序中自行控制，sqltoy只做初始化构建(如ehcache创建一个缓存实例，但不加载数据)
 							// local模式是避免一些额外争议的产物，有部分开发者坚持缓存要应用自己管理
-							if (translateType.equals("local") && !elt.hasAttribute("keep-alive")) {
+							if ("local".equals(translateType) && !elt.hasAttribute("keep-alive")) {
 								translateCacheModel.setKeepAlive(-1);
 							}
 							translateMap.put(translateCacheModel.getCache(), translateCacheModel);
@@ -161,7 +161,7 @@ public class TranslateConfigParse {
 								}
 							}
 							// sql模式且非sqlId模式定义
-							if (checherConfigModel.getType().equals("sql")) {
+							if ("sql".equals(checherConfigModel.getType())) {
 								if (StringUtil.isBlank(checherConfigModel.getSql())) {
 									sqlId = (checherConfigModel.isIncrement() ? "s_trans_merge_chk_0" : "s_trans_chk_0")
 											+ index;
